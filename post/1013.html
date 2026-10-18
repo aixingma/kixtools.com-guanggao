@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>从在线流到本地 MP4：四种转换路线实测</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/post/1013.html">
+  <meta name="description" content="实测浏览器端 FFmpeg 转换、命令行 FFmpeg、桌面转换软件与录屏四种 m3u8 转 MP4 方案的耗时与画质，附各方案适用边界。">
+  <meta name="keywords" content="m3u8转mp4,hls转mp4,视频转换,ffmpeg转换,ts合并">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+      <meta property="og:type" content="article">
+  <meta property="og:title" content="从在线流到本地 MP4：四种转换路线实测">
+  <meta property="og:description" content="实测浏览器端 FFmpeg 转换、命令行 FFmpeg、桌面转换软件与录屏四种 m3u8 转 MP4 方案的耗时与画质，附各方案适用边界。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/post/1013.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"从在线流到本地 MP4：四种转换路线实测","description":"实测浏览器端 FFmpeg 转换、命令行 FFmpeg、桌面转换软件与录屏四种 m3u8 转 MP4 方案的耗时与画质，附各方案适用边界。","inLanguage":"zh-CN","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/post/1013.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/">首页</a></li><li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li><li><a href="/vlc/">VLC 播放器</a></li><li><a href="/post/">教程中心</a></li><li><a href="/about.html">关于</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="语言"><option value="zh" selected>中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>从在线流到本地 MP4：四种转换路线实测</h1>
+<div class="article-meta">发布于 2026-10-18 · 阅读约 5 分钟</div>
+<div class="article-toc"><h4>目录</h4><ol><li><a href="#criteria">衡量转换方案的四把尺子</a></li><li><a href="#web">路线一：网页工具零安装</a></li><li><a href="#cli">路线二：FFmpeg 命令行全能选手</a></li><li><a href="#gui">路线三：桌面转换软件</a></li><li><a href="#record">路线四：录屏兜底</a></li><li><a href="#verdict">实测结论</a></li></ol></div>
+
+<h2 id="criteria">衡量转换方案的四把尺子</h2>
+<p>同一条 m3u8，落到本地 MP4 的路径不止一条。挑方案时我们关心四件事：画质有没有损失、要等多久、装不装软件、以及源站的态度（跨域、加密、防盗链）。</p>
+
+<h2 id="web">路线一：网页工具零安装</h2>
+<p>浏览器里就能完成：打开 <a href="/m3u8_to_mp4/">M3U8 转 MP4 工具</a>，粘上播放列表地址，进度条走完即得文件。它跑在页面的 WebAssembly 环境里，数据不离开你的设备。短板是内存受浏览器限制，超大视频和严格跨域的源容易卡壳。</p>
+
+<h2 id="cli">路线二：FFmpeg 命令行全能选手</h2>
+<pre><code># 无损转封装：只换容器，不碰画面，几分钟出片
+ffmpeg -i "https://example.com/master.m3u8" -c copy movie.mp4
+
+# 编码参数混乱时，重编码一次换最大兼容
+ffmpeg -i "https://example.com/master.m3u8" -c:v libx264 -crf 20 -c:a aac movie.mp4</code></pre>
+<p>两条命令覆盖九成场景：前者速度极快且画质分毫不损，后者用时间换兼容。AES-128 加密流只要密钥可访问，FFmpeg 会自动完成解密。</p>
+
+<h2 id="gui">路线三：桌面转换软件</h2>
+<p>不想记参数的话，图形界面的转换器（包括 VLC 自带的转码功能）同样能把 HLS 收进 MP4。优点是所见即所得，缺点是自由度不如命令行，遇到特殊流时排错信息也不够透明。</p>
+
+<h2 id="record">路线四：录屏兜底</h2>
+<p>源站做了签名防盗链或动态令牌，前三条路全被堵死时，OBS 之类的录屏工具是最后的选择。实时录一小时就要等一小时，画质只能"看齐"不能"等同"，仅作应急。</p>
+
+<h2 id="verdict">实测结论</h2>
+<p>短平快选网页工具；追求画质与批量处理认准 FFmpeg；怕命令行用桌面软件；前路全断再录屏。掌握其中任意两条，基本告别"这条流下不下来"的困扰。需要先摸清流的真实地址，可移步 <a href="/post/1017.html">m3u8 抓取教程</a>；更多转换细节见 <a href="/post/">教程中心</a>。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>一个把 HLS 流媒体播放、测试与转换装进浏览器的在线实验室，为开发者与普通观众提供零门槛的视频工具。</p>
+      </div>
+      <div class="footer-col"><h4>工具</h4><ul><li><a href="/">在线播放器</a></li><li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li><li><a href="/vlc/">VLC 播放器</a></li></ul></div>
+      <div class="footer-col"><h4>资源</h4><ul><li><a href="/post/">教程中心</a></li><li><a href="/about.html">关于本站</a></li><li><a href="/privacy.html">隐私政策</a></li></ul></div>
+      <div class="footer-col">
+        <h4>语言</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab · 保留所有权利</span>
+      <span>视频资源均来自互联网，侵权反馈请致：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

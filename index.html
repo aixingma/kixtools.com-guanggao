@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M3U8Lab｜浏览器里的 HLS 在线播放器 - 免安装播放与测试 m3u8 链接</title>
+  <meta name="keywords" content="M3U8Lab,m3u8在线播放器,hls流媒体测试,网页播放m3u8,m3u8转mp4,直播源检测">
+  <meta name="description" content="M3U8Lab 是一款纯浏览器运行的 HLS 在线播放工具：粘贴 m3u8 地址即可秒开视频流，支持自适应码率、画质切换与全平台播放，并配套 m3u8 转 MP4、iframe 嵌入等实用能力。">
+  <link rel="canonical" href="https://m3u8.kixtools.com/">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/js/jquery.min.js"></script>
+  <link href="https://web.sdk.qcloud.com/player/tcplayer/release/v5.1.0/tcplayer.min.css" rel="stylesheet">
+  <script src="https://web.sdk.qcloud.com/player/tcplayer/release/v5.1.0/tcplayer.v5.1.0.min.js"></script>
+  <script src="/js/config.js"></script>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="M3U8Lab｜浏览器里的 HLS 在线播放器">
+  <meta property="og:description" content="粘贴 m3u8 地址即可在浏览器中直接播放与测试 HLS 视频流，免安装、全平台、隐私安全。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"M3U8Lab","alternateName":"M3U8Lab 在线 HLS 播放器","url":"https://m3u8.kixtools.com/","applicationCategory":"MultimediaApplication","operatingSystem":"Any","inLanguage":"zh-CN","description":"M3U8Lab 是一款纯浏览器运行的 HLS 在线播放工具，支持 m3u8 链接播放测试、自适应码率与 m3u8 转 MP4。","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"},"featureList":["m3u8 在线播放","HLS 自适应码率","m3u8 转 MP4","iframe 嵌入播放器"]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"M3U8Lab","url":"https://m3u8.kixtools.com/","inLanguage":"zh-CN"}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/">
+      <span class="brand-logo">▶</span>
+      <span>M3U8Lab</span>
+    </a>
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">首页</a></li>
+        <li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li>
+        <li><a href="/vlc/">VLC 播放器</a></li>
+        <li><a href="/post/">教程中心</a></li>
+        <li><a href="/about.html">关于</a></li>
+      </ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="语言">
+        <option value="zh" selected>中文</option>
+        <option value="en">English</option>
+        <option value="pt">Português</option>
+        <option value="ja">日本語</option>
+        <option value="ko">한국어</option>
+      </select>
+      <a href="/m3u8_to_mp4/" class="btn btn-primary">转换工具</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-inner">
+    <span class="eyebrow">⬡ 免安装 · 纯本地运行 · 支持五国语言</span>
+    <h1>把任意 m3u8 链接<br>变成浏览器里的一场放映</h1>
+    <p class="lead">M3U8Lab 专注于 HLS 流媒体的即开即播：粘贴地址、回车、观看。自适应码率自动匹配你的网络，桌面与手机同样流畅。</p>
+    <div class="hero-actions">
+      <a href="#player" class="btn btn-primary btn-lg">播放器直达</a>
+      <a href="/post/" class="btn btn-ghost btn-lg">进阶教程</a>
+    </div>
+  </div>
+</section>
+
+<main>
+  <div class="container" id="player">
+    <div class="player-card">
+      <form class="player-form" onsubmit="event.preventDefault(); play();">
+        <input type="text" id="url" value="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" placeholder="粘贴 m3u8 播放地址，如 https://example.com/live/index.m3u8" autocomplete="off">
+        <button type="submit">开始播放</button>
+      </form>
+      <video id="player-container-id" preload="auto" playsinline webkit-playsinline></video>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>一台不需要安装的流媒体工作台</h2>
+        <p>从临时看一场直播，到批量测试视频源，M3U8Lab 都能胜任</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <h3>秒级响应</h3>
+          <p>没有客户端、没有插件、没有等待页。打开网页输入链接，播放器立即加载你的视频流。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧭</div>
+          <h3>跨端一致体验</h3>
+          <p>依托 HTML5 与 HLS 标准协议，Windows、macOS、Linux、iOS、Android 上的表现完全一致。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🛡️</div>
+          <h3>数据不出浏览器</h3>
+          <p>视频数据直接从源站拉取并在本地解码渲染，我们不经手、不缓存、不记录任何内容。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔌</div>
+          <h3>一行代码嵌入</h3>
+          <p>复制 iframe 代码就能把播放器搬进你自己的站点，适合演示页、后台预览与二次开发。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>三步完成一次播放</h2>
+        <p>整个流程不超过十秒钟</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <h4>拿到视频源地址</h4>
+          <p>从直播平台、CDN 后台或抓包工具获取以 .m3u8 结尾的链接。</p>
+        </div>
+        <div class="step">
+          <h4>粘贴进输入框</h4>
+          <p>把链接填入播放器上方的地址栏，支持 https 与标准 HLS 端口。</p>
+        </div>
+        <div class="step">
+          <h4>回车立即观看</h4>
+          <p>播放器解析播放列表并按序加载分片，画质随带宽自动切换。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>把播放器装进你的网页</h2>
+        <p>一段 iframe，让任意页面都具备 HLS 播放能力</p>
+      </div>
+      <div style="max-width:760px;margin:0 auto;">
+        <pre><code>&lt;iframe src="https://m3u8.kixtools.com/player.html?url=https://your-stream/index.m3u8"
+  width="100%" height="480" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;</code></pre>
+        <p style="text-align:center;margin-top:14px;color:var(--ink-500);">将 <code>url</code> 参数替换为你自己的 m3u8 地址，其余保持默认。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>高频疑问速查</h2>
+        <p>关于 m3u8 播放，用户最常问的几件事</p>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q">m3u8 到底是文件还是格式？</div>
+          <div class="faq-a"><p>两者都是：它是一个以 UTF-8 编码的纯文本播放列表，同时也是 HLS（HTTP Live Streaming）协议所使用的索引格式。里面记录着视频分片的顺序与位置，播放器照着清单逐段加载即可实现流式播放。</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">为什么我的链接粘进来是黑屏？</div>
+          <div class="faq-a"><p>最常见的原因有四种：地址已过期、源站开启了防盗链校验、服务器未返回跨域许可（CORS）、或视频源仅支持 HTTP 而本站为 HTTPS（浏览器会拦截混合内容）。可先在浏览器新标签页直接打开该链接验证是否可访问。</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">除了 m3u8 还能播别的吗？</div>
+          <div class="faq-a"><p>本工具面向 HLS 场景优化，支持 H.264/H.265 视频与 AAC/MP3 音频编码的 m3u8 流。单独的 MP4 文件建议直接用浏览器打开，无需借助播放器。</p></div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">观看会消耗源站之外的流量吗？</div>
+          <div class="faq-a"><p>不会。播放过程全部发生在你的浏览器里，分片数据由源站直连传输，M3U8Lab 的服务器不在链路之中，因此也不会产生额外的转码或代理流量。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>实验室的其他工具</h2>
+        <p>围绕 HLS 视频流构建的完整工具链</p>
+      </div>
+      <div class="grid">
+        <a href="/m3u8_to_mp4/" class="card" style="text-decoration:none;color:inherit;">
+          <div class="card-icon">🎬</div>
+          <h3>m3u8 → MP4 转换器</h3>
+          <p>在浏览器端完成分片下载与 FFmpeg 封装，直接得到可保存的 MP4 文件，全程无需上传。</p>
+        </a>
+        <a href="/vlc/" class="card" style="text-decoration:none;color:inherit;">
+          <div class="card-icon">🖥️</div>
+          <h3>VLC 播放方案</h3>
+          <p>开源播放器的下载指引与 m3u8 配置教程，适合需要离线或本地播放高级选项的用户。</p>
+        </a>
+        <a href="/post/" class="card" style="text-decoration:none;color:inherit;">
+          <div class="card-icon">🧪</div>
+          <h3>教程中心</h3>
+          <p>协议原理、排错手册、格式对比与工具评测，覆盖流媒体播放的完整知识链路。</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;">
+          <span class="brand-logo">▶</span>
+          <span style="color:#f2f6fc;">M3U8Lab</span>
+        </div>
+        <p>一个把 HLS 流媒体播放、测试与转换装进浏览器的在线实验室，为开发者与普通观众提供零门槛的视频工具。</p>
+      </div>
+      <div class="footer-col">
+        <h4>工具</h4>
+        <ul>
+          <li><a href="/">在线播放器</a></li>
+          <li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li>
+          <li><a href="/vlc/">VLC 播放器</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>资源</h4>
+        <ul>
+          <li><a href="/post/">教程中心</a></li>
+          <li><a href="/about.html">关于本站</a></li>
+          <li><a href="/privacy.html">隐私政策</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>语言</h4>
+        <ul>
+          <li><a href="/">中文</a></li>
+          <li><a href="/en/">English</a></li>
+          <li><a href="/pt/">Português</a></li>
+          <li><a href="/ja/">日本語</a></li>
+          <li><a href="/ko/">한국어</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab · 保留所有权利</span>
+      <span>视频资源均来自互联网，侵权反馈请致：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var player = undefined;
+  function play() {
+    var url = document.getElementById('url').value.trim();
+    if (!url) { alert('请输入 m3u8 播放地址'); return; }
+    if (player === undefined) {
+      player = TCPlayer('player-container-id', {
+        sources: [{ src: url }],
+        licenseUrl: window.SITE_CONFIG.licenseUrl,
+        licenseKey: window.SITE_CONFIG.licenseKey,
+      });
+    }
+    player.pause();
+    player.src(url);
+    player.play();
+  }
+
+  // 语言切换
+  document.getElementById('language-selector').addEventListener('change', function () {
+    var v = this.value, p = window.location.pathname;
+    var map = { zh: '', en: '/en', pt: '/pt', ja: '/ja', ko: '/ko' };
+    var clean = p.replace(/^\/(en|pt|ja|ko)/, '') || '/';
+    window.location.href = (map[v] || '') + clean;
+  });
+
+  // 移动端菜单
+  document.getElementById('menuToggle').addEventListener('click', function (e) {
+    e.stopPropagation();
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.body.addEventListener('click', function () {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+
+  // FAQ 折叠
+  document.querySelectorAll('.faq-q').forEach(function (q) {
+    q.addEventListener('click', function () {
+      this.parentElement.classList.toggle('open');
+    });
+  });
+</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

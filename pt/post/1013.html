@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Do stream online ao MP4 local: quatro rotas de conversão testadas</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/pt/post/1013.html">
+  <meta name="description" content="Cronometramos e comparamos quatro rotas de M3U8 para MP4: FFmpeg no navegador, linha de comando, conversores desktop e captura de tela.">
+  <meta name="keywords" content="m3u8 para mp4,converter hls,ffmpeg m3u8,ts para mp4">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+      <meta property="og:type" content="article">
+  <meta property="og:title" content="Do stream online ao MP4 local: quatro rotas de conversão testadas">
+  <meta property="og:description" content="Cronometramos e comparamos quatro rotas de M3U8 para MP4: FFmpeg no navegador, linha de comando, conversores desktop e captura de tela.">
+  <meta property="og:url" content="https://m3u8.kixtools.com/pt/post/1013.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Do stream online ao MP4 local: quatro rotas de conversão testadas","description":"Cronometramos e comparamos quatro rotas de M3U8 para MP4: FFmpeg no navegador, linha de comando, conversores desktop e captura de tela.","inLanguage":"pt","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/pt/post/1013.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/pt"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/pt/">Início</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 para MP4</a></li><li><a href="/vlc/">Player VLC</a></li><li><a href="/pt/post/">Tutoriais</a></li><li><a href="/pt/about.html">Sobre</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="Idioma"><option value="zh">中文</option><option value="en">English</option><option value="pt" selected>Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>Do stream online ao MP4 local: quatro rotas de conversão testadas</h1>
+<div class="article-meta">Publicado em 2026-10-18 · leitura de ~6 min</div>
+<div class="article-toc"><h4>Índice</h4><ol><li><a href="#criterios">Quatro critérios de avaliação</a></li><li><a href="#wasm">Rota 1 · FFmpeg.wasm no navegador</a></li><li><a href="#cli">Rota 2 · FFmpeg pela linha de comando</a></li><li><a href="#desktop">Rota 3 · Apps com interface gráfica</a></li><li><a href="#resultado">Resultado lado a lado</a></li></ol></div>
+
+<h2 id="criterios">Quatro critérios de avaliação</h2>
+<p>Para comparar caminhos de conversão com justiça, usamos a mesma régua: <strong>fidelidade</strong> (o vídeo sai sem recodificação?), <strong>velocidade</strong> (quanto tempo por hora de conteúdo), <strong>privacidade</strong> (os dados ficam na sua máquina?) e <strong>barreira de entrada</strong> (quantos minutos até a primeira conversão concluída). Nenhuma rota vence nos quatro critérios — a tabela no fim resume os trade-offs.</p>
+
+<h2 id="wasm">Rota 1 · FFmpeg.wasm no navegador</h2>
+<p>O <a href="/en/m3u8_to_mp4/">conversor M3U8 para MP4</a> deste lab roda o FFmpeg compilado para WebAssembly dentro da aba. O stream é baixado da origem, montado e convertido localmente; nenhum byte do vídeo passa por servidor nosso. O custo dessa comodidade: as fontes precisam de CORS liberado e arquivos muito grandes esbarram no limite de memória da aba — abaixo de algumas centenas de megabytes, a experiência é tranquila.</p>
+
+<h2 id="cli">Rota 2 · FFmpeg pela linha de comando</h2>
+<p>A via mais completa. Dois comandos cobrem praticamente todos os cenários:</p>
+<pre><code># Reempacotar sem recodificar: velocidade máxima, qualidade intacta
+ffmpeg -i "https://exemplo.com/master.m3u8" -c copy saida.mp4
+
+# Recodificar para H.264 + AAC: compatibilidade com qualquer aparelho
+ffmpeg -i "https://exemplo.com/master.m3u8" -c:v libx264 -crf 20 -c:a aac -b:a 128k saida.mp4</code></pre>
+<p>Playlists com AES-128 são descriptografadas em voo, desde que a chave declarada em <code>#EXT-X-KEY</code> esteja acessível. Em vídeos de várias horas, o primeiro comando costuma terminar mais rápido que o próprio tempo de reprodução.</p>
+
+<h2 id="desktop">Rota 3 · Apps com interface gráfica</h2>
+<p>Se digitar comandos não combina com você, há conversores de desktop com janela e botões — muitos deles, na prática, embrulhos gráficos em torno do FFmpeg ou do yt-dlp. A vantagem é a curva de aprendizado quase nula; a desvantagem é a manutenção: atualizações atrasadas e instaladores que empacotam software extra pedem atenção na hora de baixar. Prefira projetos de código aberto com comunidade ativa.</p>
+
+<h2 id="resultado">Resultado lado a lado</h2>
+<table style="width:100%;border-collapse:collapse;font-size:14px;">
+<thead><tr style="background:var(--bg-soft);"><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">Rota</th><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">Ponto forte</th><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">Limitação</th></tr></thead>
+<tbody>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">Navegador (WebAssembly)</td><td style="padding:10px;border-bottom:1px solid var(--border);">Zero instalação e privacidade total</td><td style="padding:10px;border-bottom:1px solid var(--border);">Depende de CORS e limita arquivos grandes</td></tr>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">FFmpeg (CLI)</td><td style="padding:10px;border-bottom:1px solid var(--border);">Vence em velocidade, tamanho e flexibilidade</td><td style="padding:10px;border-bottom:1px solid var(--border);">Exige familiaridade com terminal</td></tr>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">App gráfico</td><td style="padding:10px;border-bottom:1px solid var(--border);">Aprende-se em segundos</td><td style="padding:10px;border-bottom:1px solid var(--border);">Qualidade dos projetos varia muito</td></tr>
+</tbody>
+</table>
+<p>Uma observação que vale ouro: antes de converter qualquer coisa, valide o link no <a href="/pt/">player online</a> — se o stream não roda, não converterá. Streams com DRM ficam fora dessa discussão: proteção comercial não se contorna, e é assim que deve ser. Para os próximos passos, a lista completa de <a href="/pt/post/">tutoriais</a> tem guias passo a passo.</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>Um laboratório online que traz reprodução, teste e conversão de HLS para o seu navegador — ferramentas de vídeo sem instalação.</p>
+      </div>
+      <div class="footer-col"><h4>Ferramentas</h4><ul><li><a href="/pt/">Player online</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 para MP4</a></li><li><a href="/vlc/">Player VLC</a></li></ul></div>
+      <div class="footer-col"><h4>Recursos</h4><ul><li><a href="/pt/post/">Tutoriais</a></li><li><a href="/pt/about.html">Sobre</a></li><li><a href="/privacy.html">Privacidade</a></li></ul></div>
+      <div class="footer-col">
+        <h4>Idiomas</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab. Todos os direitos reservados.</span>
+      <span>Os vídeos são provenientes da internet. Para remoção: aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

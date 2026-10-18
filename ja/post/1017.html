@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>開発者ツールで見つける：Webページに隠れたM3U8 URLの探し方</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/ja/post/1017.html">
+  <meta name="description" content="Network パネルを正しいキーワードで絞り込めば、ページの裏に隠れた m3u8 URL は数分で見つかります。ダミーとの判別も紹介。">
+  <meta name="keywords" content="m3u8 url 抽出,開発者ツール,network パネル">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+    <meta property="og:type" content="article">
+  <meta property="og:title" content="開発者ツールで見つける：Webページに隠れたM3U8 URLの探し方">
+  <meta property="og:description" content="Network パネルを正しいキーワードで絞り込めば、ページの裏に隠れた m3u8 URL は数分で見つかります。ダミーとの判別も紹介。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/ja/post/1017.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"開発者ツールで見つける：Webページに隠れたM3U8 URLの探し方","description":"Network パネルを正しいキーワードで絞り込めば、ページの裏に隠れた m3u8 URL は数分で見つかります。ダミーとの判別も紹介。","inLanguage":"ja","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/ja/post/1017.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/ja"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/ja/">ホーム</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="言語"><option value="zh">中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja" selected>日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="メニュー"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>開発者ツールで見つける：Webページに隠れたM3U8 URLの探し方</h1>
+<div class="article-meta">公開日 2026-10-18 · 約4分で読める</div>
+<div class="article-toc"><h4>目次</h4><ol><li><a href="#start">動画を動かしてから覗く</a></li><li><a href="#filter">Networkパネルの絞り込み方</a></li><li><a href="#console">コンソールでURLを一覧化する</a></li><li><a href="#master">取れたURLがマスターかメディアか</a></li><li><a href="#nohit">m3u8でヒットしないときの代替ワード</a></li></ol></div>
+
+<h2 id="start">動画を動かしてから覗く</h2>
+<p>多くのサイトは動画を再生した瞬間にだけストリームを読み込みます。つまり開発者ツールを開く順番が重要で、「ページを開く → F12でNetworkパネルを表示 → 動画を再生」の順に進めないと、肝心のリクエストがログに現れません。ページ遷移でログが消えて困る場合は、パネル上部の<strong>Preserve log</strong>にチェックを入れておくと記録が保持されます。</p>
+
+<h2 id="filter">Networkパネルの絞り込み方</h2>
+<p>ログが溜まったら、フィルターボックスに<code>m3u8</code>と入力します。一覧が減らないときは、タイプ列の<code>x-mpegURL</code>や<code>vnd.apple.mpegURL</code>（HLSのMIMEタイプ）で絞るのも有効です。目的のリクエストが見つかったら右クリックから<strong>Copy → Copy link address</strong>でURLだけを取り出せます。</p>
+<p>見つけたURLが正しいかどうかは、実際に貼って再生すれば確実です。<a href="/ja/">オンラインプレーヤー</a>にそのままペーストして、映像が立ち上がれば完成です。</p>
+
+<h2 id="console">コンソールでURLを一覧化する</h2>
+<p>リクエストが多すぎて目視が大変なときは、Consoleタブから読み込まれたリソースを一気に出せます。</p>
+<pre><code>performance.getEntriesByType('resource')
+  .filter(r =&gt; r.name.includes('.m3u8'))
+  .map(r =&gt; r.name)</code></pre>
+<p>このスニペットはページが読み込んだ全リソースからm3u8を含むURLだけを配列で返します。セグメント(.ts)のURLを拾いたい場合は<code>'.ts'</code>に変えるだけです。動的に差し替わるライブ配信のリストを観察するときにも便利で、実行のたびに現在のプレイリストURLが確認できます。</p>
+
+<h2 id="master">取れたURLがマスターかメディアか</h2>
+<p>1本取れたから終わり、ではありません。URLの中身を開いて<code>EXT-X-STREAM-INF</code>が並んでいればそれはマスタープレイリストで、実ファイルはさらに先の各画質のm3u8にあります。逆に<code>EXTINF</code>と<code>.ts</code>が並んでいればメディアプレイリストです。変換やダウンロードに使う場合はマスターを渡すのが安全で、ツール側が最適な画質を選んでくれます。URLのクエリに有効期限やトークンが付いているソースも多く、その場合は取得後すぐに使わないと失効する点にも注意してください。</p>
+
+<h2 id="nohit">m3u8でヒットしないときの代替ワード</h2>
+<p>フィルタで何も出ないケースでは、次の順に試してみてください。</p>
+<ul>
+<li><code>.ts</code>で検索する。セグメントが見つかれば、そのURLの上の階層にプレイリストがあることが多い。</li>
+<li><code>playlist</code>や<code>index</code>など配信者の命名に由来する語で検索する。</li>
+<li>XHR/Fetchフィルタに切り替え、応答の大きいリクエストから当たりを付ける。</li>
+<li>どうしても出ない場合は、ページのソースやJS内にURLが組み込まれていないか<code>view-source:</code>で確認する。難読化されている場合、復元にはJSの解析が必要になります。</li>
+</ul>
+<p>見つけたURLの扱いに迷ったら、<a href="/ja/post/">チュートリアル</a>のほかの記事も参照してください。用途に応じた次の一手がまとまっています。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>HLS の再生・テスト・変換をブラウザにまとめたオンライン実験室。開発者にも一般ユーザーにも門戸を開く動画ツールです。</p>
+      </div>
+      <div class="footer-col"><h4>ツール</h4><ul><li><a href="/ja/">オンラインプレーヤー</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li></ul></div>
+      <div class="footer-col"><h4>リソース</h4><ul><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li><li><a href="/privacy.html">プライバシー</a></li></ul></div>
+      <div class="footer-col">
+        <h4>言語</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab All rights reserved.</span>
+      <span>動画はインターネット上の公開リソースです。お問い合わせ：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

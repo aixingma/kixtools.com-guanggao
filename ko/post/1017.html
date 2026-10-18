@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 도구로 숨겨진 M3U8 주소 찾는 방법</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/ko/post/1017.html">
+  <meta name="description" content="Network 패널을 올바른 키워드로 필터링하면 페이지 뒤에 숨은 m3u8 주소를 몇 분 안에 찾을 수 있습니다. 가짜 후보 걸러내는 법도 함께.">
+  <meta name="keywords" content="m3u8 주소 찾기,개발자 도구,network 패널">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+    <meta property="og:type" content="article">
+  <meta property="og:title" content="개발자 도구로 숨겨진 M3U8 주소 찾는 방법">
+  <meta property="og:description" content="Network 패널을 올바른 키워드로 필터링하면 페이지 뒤에 숨은 m3u8 주소를 몇 분 안에 찾을 수 있습니다. 가짜 후보 걸러내는 법도 함께.">
+  <meta property="og:url" content="https://m3u8.kixtools.com/ko/post/1017.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"개발자 도구로 숨겨진 M3U8 주소 찾는 방법","description":"Network 패널을 올바른 키워드로 필터링하면 페이지 뒤에 숨은 m3u8 주소를 몇 분 안에 찾을 수 있습니다. 가짜 후보 걸러내는 법도 함께.","inLanguage":"ko","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/ko/post/1017.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/ko"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/ko/">홈</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 MP4 변환</a></li><li><a href="/vlc/">VLC 플레이어</a></li><li><a href="/ko/post/">튜토리얼</a></li><li><a href="/ko/about.html">소개</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="언어"><option value="zh">中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko" selected>한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="메뉴"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>개발자 도구로 숨겨진 M3U8 주소 찾는 방법</h1>
+<div class="article-meta">게시 2026-10-18 · 약 4분 소요</div>
+<div class="article-toc"><h4>목차</h4><ol><li><a href="#panel">Network 패널을 준비하는 순서</a></li><li><a href="#hunt">재생 목록 요청 걸러내기</a></li><li><a href="#judge">후보 주소 검증하기</a></li><li><a href="#corner">막히는 지점별 해법</a></li></ol></div>
+
+<h2 id="panel">Network 패널을 준비하는 순서</h2>
+<p>영상 주소는 소스 보기로는 보이지 않고, 플레이어가 재생을 시작할 때만 네트워크로 흐릅니다. 그래서 관건은 <strong>재생 버튼을 누르기 전에</strong> 도구를 열어 두는 것입니다.</p>
+<ol>
+<li>대상 페이지에서 <code>F12</code>(또는 우클릭 → 검사)로 개발자 도구를 열고 <strong>Network</strong> 탭으로 이동합니다.</li>
+<li><strong>Preserve log</strong>를 켭니다. 페이지가 새로고침되거나 이동해도 기록이 사라지지 않습니다.</li>
+<li>기록이 비어 있는 상태에서 영상을 재생합니다. 요청이 차곡차곡 쌓이기 시작합니다.</li>
+</ol>
+
+<h2 id="hunt">재생 목록 요청 걸러내기</h2>
+<p>필터 상자에 <code>m3u8</code>을 입력하면 대부분의 경우 바로 잡힙니다. 결과가 비어 있다면 <code>.ts</code>나 <code>.mp4</code>로 검색해 보세요. 조각 요청이 보이면 그 <strong>Initiator(개시자)</strong>나 상위 경로를 따라 올라가면 재생 목록이 나옵니다. MIME 타입으로 구별하는 방법도 있습니다:</p>
+<ul>
+<li><code>application/vnd.apple.mpegurl</code> 또는 <code>application/x-mpegURL</code> — HLS 재생 목록 본체입니다.</li>
+<li><code>video/mp2t</code> — TS 조각입니다. 주소가 아니라 내용물이죠.</li>
+</ul>
+<p>후보를 찾았다면 우클릭 → <strong>Copy → Copy link address</strong>로 주소를 복사합니다.</p>
+
+<h2 id="judge">후보 주소 검증하기</h2>
+<p>복사한 주소를 새 탭에서 열어 응답 첫 줄을 확인하세요. <code>#EXTM3U</code>로 시작하면 재생 목록이 맞습니다. 내용에 따라 성격이 갈립니다:</p>
+<pre><code>#EXTM3U
+#EXT-X-STREAM-INF:BANDWIDTH=2600000,RESOLUTION=1920x1080
+1080p/index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=1200000,RESOLUTION=1280x720
+720p/index.m3u8</code></pre>
+<p><code>#EXT-X-STREAM-INF</code>가 보이면 <strong>마스터</strong>입니다. 이 주소 자체보다 그 안에 적힌 하위 재생 목록 주소가 실제 재생 대상인 경우가 많습니다. <code>#EXTINF</code>와 TS 파일 목록만 나열되어 있으면 <strong>미디어 재생 목록</strong>이며, 바로 재생에 쓸 수 있는 주소입니다. 찾은 주소가 동작하는지는 <a href="/ko/">온라인 플레이어</a>에 붙여 넣어 보는 것이 가장 빠릅니다.</p>
+
+<h2 id="corner">막히는 지점별 해법</h2>
+<ul>
+<li><strong>재생해도 m3u8 요청이 안 보임</strong> — MSE 기반 플레이어는 요청이 스크립트에서 일어나므로, 필터를 지우고 Fetch/XHR 뷰에서 타입별로 정렬해 보세요.</li>
+<li><strong>주소에 서명이 붙어 있음</strong> — 쿼리의 token·expire 값은 수명이 짧습니다. 테스트 직전에 다시 복사하는 것이 안전합니다.</li>
+<li><strong>콘솔에 CORS 오류</strong> — 서버가 외부 재생을 허용하지 않는 상태입니다. 주소가 맞아도 다른 곳에서는 재생되지 않습니다.</li>
+<li><strong>모바일 전용 스트림</strong> — 데스크톱 Chrome의 기기 에뮬레이션으로 모바일 환경의 요청을 유도하면 잡히는 경우가 있습니다.</li>
+</ul>
+<p>주소를 확보한 다음 단계가 궁금하면 <a href="/ko/post/">튜토리얼</a>의 변환·저장 편을 이어서 보고, 재생이 자꾸 버벅이면 원인별 점검 글을 참고하세요. 변환까지 바로 진행하려면 <a href="/en/m3u8_to_mp4/">M3U8→MP4 변환</a> 도구를 쓰면 됩니다.</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>HLS 스트리밍 재생·테스트·변환을 브라우저 안에 담은 온라인 실험실, 개발자와 일반 사용자 모두를 위한 영상 도구입니다.</p>
+      </div>
+      <div class="footer-col"><h4>도구</h4><ul><li><a href="/ko/">온라인 플레이어</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 MP4 변환</a></li><li><a href="/vlc/">VLC 플레이어</a></li></ul></div>
+      <div class="footer-col"><h4>리소스</h4><ul><li><a href="/ko/post/">튜토리얼</a></li><li><a href="/ko/about.html">소개</a></li><li><a href="/privacy.html">개인정보</a></li></ul></div>
+      <div class="footer-col">
+        <h4>언어</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab. All rights reserved.</span>
+      <span>영상은 인터넷 공개 자원입니다. 문의: aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convert M3U8 to MP4 Online — In-Browser, Files Never Leave Your Device | M3U8Lab</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/en/m3u8_to_mp4/">
+  <meta name="description" content="Turn HLS streams into MP4 files entirely in your browser: automatic playlist parsing, concurrent segment downloads and FFmpeg remuxing — nothing is uploaded anywhere.">
+  <meta name="keywords" content="m3u8 to mp4 converter,online hls converter,download m3u8,merge ts to mp4">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+<script src="/js/ffmpeg/ffmpeg.js"></script>
+    <meta property="og:type" content="website">
+  <meta property="og:title" content="Convert M3U8 to MP4 Online — In-Browser, Files Never Leave Your Device | M3U8Lab">
+  <meta property="og:description" content="Turn HLS streams into MP4 files entirely in your browser: automatic playlist parsing, concurrent segment downloads and FFmpeg remuxing — nothing is uploaded anywhere.">
+  <meta property="og:url" content="https://m3u8.kixtools.com/en/m3u8_to_mp4/">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Convert M3U8 to MP4 Online — In-Browser, Files Never Leave Your Device | M3U8Lab","url":"https://m3u8.kixtools.com/en/m3u8_to_mp4/","inLanguage":"en","description":"Turn HLS streams into MP4 files entirely in your browser: automatic playlist parsing, concurrent segment downloads and FFmpeg remuxing — nothing is uploaded anywhere."}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/en"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/en/">Home</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 to MP4</a></li><li><a href="/vlc/">VLC Player</a></li><li><a href="/en/post/">Tutorials</a></li><li><a href="/en/about.html">About</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="Language"><option value="zh">中文</option><option value="en" selected>English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<div class="convert-wrap"><div class="convert-card">
+<h1>M3U8 to MP4</h1>
+<p class="lead">Enter an m3u8 video link and convert it to an MP4 file in your browser.<br>Pure frontend processing — your video is never uploaded to a server.</p>
+<form class="player-form" id="convertForm" autocomplete="off">
+<input type="text" name="url" id="url" placeholder="Enter an m3u8 URL, e.g. https://.../index.m3u8" value="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">
+<button type="submit" id="submitBtn">Convert</button>
+</form>
+<div class="convert-status" id="status">Waiting for an m3u8 URL…</div>
+<div class="convert-progress" id="progress"><div class="convert-progress-bar" id="progressBar"></div></div>
+<div class="alert alert-info" style="margin-top:24px;"><strong>Note:</strong><ul style="margin:8px 0 0 18px;"><li>Only m3u8 and ts segments that allow CORS are supported. Best for short videos.</li><li>Conversion runs locally in your browser. First run downloads the FFmpeg core (~25MB).</li><li>If the source blocks cross-origin access, conversion will fail.</li></ul></div>
+</div></div>
+<section class="section section-alt"><div class="container"><div class="section-head"><h2>How It Works</h2><p>Understand the conversion process</p></div><div class="steps">
+<div class="step"><h4>Parse playlist</h4><p>Read the m3u8 file and extract all ts segment URLs.</p></div>
+<div class="step"><h4>Download segments</h4><p>Download all ts video segments into browser memory.</p></div>
+<div class="step"><h4>Merge &amp; transcode</h4><p>Use FFmpeg to merge segments and package them as MP4.</p></div>
+<div class="step"><h4>Download</h4><p>Automatically download the MP4 file when done.</p></div>
+</div></div></section>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>An online lab that puts HLS playback, testing and conversion right in your browser — zero-install video tools for developers and everyday viewers.</p>
+      </div>
+      <div class="footer-col"><h4>Tools</h4><ul><li><a href="/en/">Online Player</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 to MP4</a></li><li><a href="/vlc/">VLC Player</a></li></ul></div>
+      <div class="footer-col"><h4>Resources</h4><ul><li><a href="/en/post/">Tutorials</a></li><li><a href="/en/about.html">About</a></li><li><a href="/privacy.html">Privacy Policy</a></li></ul></div>
+      <div class="footer-col">
+        <h4>Languages</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab. All rights reserved.</span>
+      <span>All streams come from the public internet. For takedown requests: aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>
+const FFMPEG_BASE = '/js/ffmpeg';
+const util = (typeof FFmpegUtil !== 'undefined' && FFmpegUtil) ? FFmpegUtil : null;
+const hasFFmpeg = !!(typeof FFmpegWASM !== 'undefined' && FFmpegWASM && FFmpegWASM.FFmpeg && util);
+const fetchFile = util ? util.fetchFile : null;
+const ffmpeg = hasFFmpeg ? new FFmpegWASM.FFmpeg() : null;
+// Engine and core are fully self-hosted: ffmpeg.js auto-loads its worker (814.ffmpeg.js) from the same
+// directory, and core/wasm load via same-origin paths — no classWorkerURL, no third-party CDN needed.
+async function loadFFmpeg(){if(ffmpeg.loaded)return;await ffmpeg.load({coreURL:FFMPEG_BASE+'/ffmpeg-core.js',wasmURL:FFMPEG_BASE+'/ffmpeg-core.wasm'});}
+const statusEl = document.getElementById('status');
+const progressEl = document.getElementById('progress');
+const progressBar = document.getElementById('progressBar');
+const btn = document.getElementById('submitBtn');
+function setStatus(m){statusEl.textContent=m;}
+function setProgress(p){progressEl.classList.add('show');progressBar.style.width=p+'%';}
+function resolveUrl(base,href){try{return new URL(href,base).href;}catch(e){return href;}}
+async function parseM3U8(url,depth){depth=depth||0;const res=await fetch(url);if(!res.ok)throw new Error('Cannot fetch m3u8 (HTTP '+res.status+')');const text=await res.text();const lines=text.split(/\r?\n/);const segments=[];let variant=null,variantBw=-1,pendingBw=-1,isVariantUri=false;for(const line of lines){const t=line.trim();if(t.startsWith('#EXT-X-STREAM-INF')){const bw=/BANDWIDTH=(\d+)/.exec(t);pendingBw=bw?parseInt(bw[1],10):0;isVariantUri=true;continue;}if(!t||t.startsWith('#'))continue;/* the URI line after #EXT-X-STREAM-INF is a variant playlist, not a segment */if(isVariantUri){isVariantUri=false;if(pendingBw>variantBw){variantBw=pendingBw;variant=resolveUrl(url,t);}continue;}segments.push(resolveUrl(url,t));}
+// Master playlist has no segments — pick the highest-bandwidth variant and recurse
+if(segments.length===0&&variant&&depth<3)return parseM3U8(variant,depth+1);if(segments.length===0)throw new Error('No video segments found in m3u8');return segments;}
+document.getElementById('convertForm').addEventListener('submit',async function(e){e.preventDefault();const url=document.getElementById('url').value.trim();if(!url){setStatus('Please enter an m3u8 URL');return;}if(!ffmpeg){setStatus('❌ Transcoding engine unavailable. Please check your network and refresh the page.');return;}btn.disabled=true;setProgress(0);try{setStatus('Parsing m3u8 playlist…');const segments=await parseM3U8(url);setStatus('Found '+segments.length+' segments, downloading…');const ffmpegPromise=loadFFmpeg();let MAX_PAR=6;try{const nav=performance.getEntriesByType('navigation')[0];if(nav&&(nav.nextHopProtocol==='h2'||nav.nextHopProtocol==='h3'))MAX_PAR=12;}catch(e){}const blobs=new Array(segments.length);let cursor=0,done=0;async function dl(){while(cursor<segments.length){const i=cursor++;const r=await fetch(segments[i]);if(!r.ok)throw new Error('Segment download failed: '+segments[i]);blobs[i]=await r.arrayBuffer();done++;setProgress(Math.round((done/segments.length)*60));setStatus('Downloading segment '+done+' / '+segments.length);}}await Promise.all(Array.from({length:Math.min(MAX_PAR,segments.length)},dl));setStatus('Merging segments…');const merged=new Blob(blobs,{type:'video/mp2t'});setStatus('Loading FFmpeg core…');await ffmpegPromise;setStatus('Transcoding to MP4…');await ffmpeg.writeFile('input.ts',await fetchFile(merged));await ffmpeg.exec(['-i','input.ts','-c','copy','-bsf:a','aac_adtstoasc','output.mp4']);const data=await ffmpeg.readFile('output.mp4');setProgress(100);setStatus('Done, downloading…');const outBlob=new Blob([data],{type:'video/mp4'});const a=document.createElement('a');a.href=URL.createObjectURL(outBlob);a.download='m3u8_'+Date.now()+'.mp4';document.body.appendChild(a);a.click();a.remove();setStatus('✅ Done! Your file has been downloaded.');}catch(err){console.error(err);setStatus('❌ Failed: '+err.message+' (likely CORS or expired link)');}finally{btn.disabled=false;}});
+document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});
+document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});
+document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});
+</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

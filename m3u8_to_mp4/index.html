@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>在线把 M3U8 转成 MP4 — 浏览器端转换，文件不出本地 | M3U8Lab</title>
+  <link rel="canonical" href="https://m3u8.kixtools.com/m3u8_to_mp4/">
+  <meta name="description" content="在浏览器里完成 M3U8 到 MP4 的下载与封装：自动解析播放列表、多线程拉取分片、FFmpeg 无损转封装，全程本地运行，适合保存短视频。">
+  <meta name="keywords" content="m3u8转mp4,在线m3u8转换,hls下载,ts合并mp4,浏览器视频转换">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="icon" href="/images/logo.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+  <script src="/js/ffmpeg/ffmpeg.js"></script>
+    <meta property="og:type" content="website">
+  <meta property="og:title" content="在线把 M3U8 转成 MP4 — 浏览器端转换，文件不出本地 | M3U8Lab">
+  <meta property="og:description" content="在浏览器里完成 M3U8 到 MP4 的下载与封装：自动解析播放列表、多线程拉取分片、FFmpeg 无损转封装，全程本地运行，适合保存短视频。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/m3u8_to_mp4/">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"在线把 M3U8 转成 MP4 — 浏览器端转换，文件不出本地 | M3U8Lab","url":"https://m3u8.kixtools.com/m3u8_to_mp4/","inLanguage":"zh-CN","description":"在浏览器里完成 M3U8 到 MP4 的下载与封装：自动解析播放列表、多线程拉取分片、FFmpeg 无损转封装，全程本地运行，适合保存短视频。"}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/">首页</a></li><li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li><li><a href="/vlc/">VLC 播放器</a></li><li><a href="/post/">教程中心</a></li><li><a href="/about.html">关于</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="语言"><option value="zh" selected>中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="convert-wrap">
+    <div class="convert-card">
+      <h1>M3U8 转 MP4</h1>
+      <p class="lead">输入 m3u8 视频链接，在浏览器内一键转换为 MP4 文件并下载。<br>纯前端处理，视频不会上传到任何服务器。</p>
+
+      <form class="player-form" id="convertForm" autocomplete="off">
+        <input type="text" name="url" id="url" placeholder="请输入 m3u8 链接，例如 https://.../index.m3u8" value="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">
+        <button type="submit" id="submitBtn">开始转换</button>
+      </form>
+
+      <div class="convert-status" id="status">等待输入 m3u8 链接…</div>
+      <div class="convert-progress" id="progress"><div class="convert-progress-bar" id="progressBar"></div></div>
+
+      <div class="alert alert-info" style="margin-top:24px;">
+        <strong>使用说明：</strong>
+        <ul style="margin:8px 0 0 18px;">
+          <li>仅支持允许跨域（CORS）访问的 m3u8 与 ts 分片，适合短视频。</li>
+          <li>转换完全在浏览器本地进行，首次加载需下载 FFmpeg 核心（约 25MB），请耐心等待。</li>
+          <li>若源站开启了防盗链或不允许跨域，将无法转换，请使用支持 CORS 的视频源。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>转换流程</h2>
+        <p>了解工具的工作原理</p>
+      </div>
+      <div class="steps">
+        <div class="step"><h4>解析播放列表</h4><p>读取 m3u8 文件，提取所有 ts 分片地址。</p></div>
+        <div class="step"><h4>下载分片</h4><p>依次下载所有 ts 视频分片到浏览器内存。</p></div>
+        <div class="step"><h4>合并转码</h4><p>使用 FFmpeg 将分片合并并封装为 MP4。</p></div>
+        <div class="step"><h4>下载保存</h4><p>转换完成后自动下载 MP4 文件到本地。</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>一个把 HLS 流媒体播放、测试与转换装进浏览器的在线实验室，为开发者与普通观众提供零门槛的视频工具。</p>
+      </div>
+      <div class="footer-col"><h4>工具</h4><ul><li><a href="/">在线播放器</a></li><li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li><li><a href="/vlc/">VLC 播放器</a></li></ul></div>
+      <div class="footer-col"><h4>资源</h4><ul><li><a href="/post/">教程中心</a></li><li><a href="/about.html">关于本站</a></li><li><a href="/privacy.html">隐私政策</a></li></ul></div>
+      <div class="footer-col">
+        <h4>语言</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab · 保留所有权利</span>
+      <span>视频资源均来自互联网，侵权反馈请致：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const FFMPEG_BASE = '/js/ffmpeg';
+  const util = (typeof FFmpegUtil !== 'undefined' && FFmpegUtil) ? FFmpegUtil : null;
+  const hasFFmpeg = !!(typeof FFmpegWASM !== 'undefined' && FFmpegWASM && FFmpegWASM.FFmpeg && util);
+  const fetchFile = util ? util.fetchFile : null;
+  const ffmpeg = hasFFmpeg ? new FFmpegWASM.FFmpeg() : null;
+
+  // 引擎与核心全部本地同源部署：ffmpeg.js 内部 worker 自动取同目录 814.ffmpeg.js，
+  // core/wasm 直接以同源路径加载，无需 classWorkerURL，也不依赖任何第三方 CDN
+  async function loadFFmpeg() {
+    if (ffmpeg.loaded) return;
+    await ffmpeg.load({
+      coreURL: FFMPEG_BASE + '/ffmpeg-core.js',
+      wasmURL: FFMPEG_BASE + '/ffmpeg-core.wasm',
+    });
+  }
+  const statusEl = document.getElementById('status');
+  const progressEl = document.getElementById('progress');
+  const progressBar = document.getElementById('progressBar');
+  const btn = document.getElementById('submitBtn');
+
+  function setStatus(msg) { statusEl.textContent = msg; }
+  function setProgress(p) {
+    progressEl.classList.add('show');
+    progressBar.style.width = p + '%';
+  }
+
+  function resolveUrl(base, href) {
+    try { return new URL(href, base).href; } catch (e) { return href; }
+  }
+
+  async function parseM3U8(url, depth) {
+    depth = depth || 0;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('无法获取 m3u8 文件 (HTTP ' + res.status + ')');
+    const text = await res.text();
+    const lines = text.split(/\r?\n/);
+    const segments = [];
+    let variant = null, variantBw = -1, pendingBw = -1, isVariantUri = false;
+    for (const line of lines) {
+      const t = line.trim();
+      if (t.startsWith('#EXT-X-STREAM-INF')) {
+        const bw = /BANDWIDTH=(\d+)/.exec(t);
+        pendingBw = bw ? parseInt(bw[1], 10) : 0;
+        isVariantUri = true;
+        continue;
+      }
+      if (!t || t.startsWith('#')) continue;
+      // #EXT-X-STREAM-INF 下一行的 URI 是变体播放列表本身，不是视频分片
+      if (isVariantUri) {
+        isVariantUri = false;
+        if (pendingBw > variantBw) { variantBw = pendingBw; variant = resolveUrl(url, t); }
+        continue;
+      }
+      segments.push(resolveUrl(url, t));
+    }
+    // 主播放列表（master playlist）不含分片，自动选取带宽最高的清晰度继续解析
+    if (segments.length === 0 && variant && depth < 3) return parseM3U8(variant, depth + 1);
+    if (segments.length === 0) throw new Error('m3u8 文件中未找到视频分片');
+    return segments;
+  }
+
+  document.getElementById('convertForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const url = document.getElementById('url').value.trim();
+    if (!url) { setStatus('请输入 m3u8 链接'); return; }
+    if (!ffmpeg) { setStatus('❌ 转码引擎未加载：请检查网络后刷新页面重试'); return; }
+
+    btn.disabled = true;
+    setProgress(0);
+    try {
+      setStatus('正在解析 m3u8 播放列表…');
+      const segments = await parseM3U8(url);
+      setStatus('共找到 ' + segments.length + ' 个分片，开始下载…');
+
+      // 下载分片的同时后台预加载 FFmpeg 核心，隐藏 30MB 核心的加载时间
+      const ffmpegPromise = loadFFmpeg();
+
+      // 自适应并发：HTTP/1.1 浏览器限 6 连接；HTTP/2/3 单连接多路复用，可安全提到 12 路
+      let MAX_PAR = 6;
+      try {
+        const nav = performance.getEntriesByType('navigation')[0];
+        if (nav && (nav.nextHopProtocol === 'h2' || nav.nextHopProtocol === 'h3')) MAX_PAR = 12;
+      } catch (e) {}
+      // 按原始顺序写入 blobs，保证拼接顺序正确
+      const blobs = new Array(segments.length);
+      let cursor = 0, done = 0;
+      async function downloadWorker() {
+        while (cursor < segments.length) {
+          const i = cursor++;
+          const r = await fetch(segments[i]);
+          if (!r.ok) throw new Error('分片下载失败: ' + segments[i]);
+          blobs[i] = await r.arrayBuffer();
+          done++;
+          setProgress(Math.round((done / segments.length) * 60));
+          setStatus('下载分片 ' + done + ' / ' + segments.length);
+        }
+      }
+      await Promise.all(Array.from({ length: Math.min(MAX_PAR, segments.length) }, downloadWorker));
+
+      setStatus('正在合并分片…');
+      const merged = new Blob(blobs, { type: 'video/mp2t' });
+
+      setStatus('正在加载 FFmpeg 核心…');
+      await ffmpegPromise;
+
+      setStatus('正在转码为 MP4…');
+      await ffmpeg.writeFile('input.ts', await fetchFile(merged));
+      await ffmpeg.exec(['-i', 'input.ts', '-c', 'copy', '-bsf:a', 'aac_adtstoasc', 'output.mp4']);
+      const data = await ffmpeg.readFile('output.mp4');
+      setProgress(100);
+
+      setStatus('转换完成，开始下载…');
+      const outBlob = new Blob([data], { type: 'video/mp4' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(outBlob);
+      a.download = 'm3u8_' + Date.now() + '.mp4';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setStatus('✅ 转换完成！文件已开始下载。');
+    } catch (err) {
+      console.error(err);
+      setStatus('❌ 转换失败：' + err.message + '（常见原因：源站不允许跨域 CORS 或链接已失效）');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  // 语言切换
+  document.getElementById('language-selector').addEventListener('change', function () {
+    var v = this.value, p = window.location.pathname;
+    var map = { zh: '', en: '/en', pt: '/pt', ja: '/ja', ko: '/ko' };
+    var clean = p.replace(/^\/(en|pt|ja|ko)/, '') || '/';
+    window.location.href = (map[v] || '') + clean;
+  });
+
+  document.getElementById('menuToggle').addEventListener('click', function (e) {
+    e.stopPropagation();
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.body.addEventListener('click', function () {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

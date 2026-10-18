@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M3U8の仕組みを図解：HLSストリーミングを支えるプレイリストファイルの構造</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/ja/post/1001.html">
+  <meta name="description" content="m3u8 プレイリストの中身をやさしく解説：ヘッダータグ、TS セグメント一覧、マスターとメディアの関係、HLS プレーヤーの読み込みの流れまで。">
+  <meta name="keywords" content="m3u8 構造,hls プレイリスト,m3u8 とは,ts セグメント">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+    <meta property="og:type" content="article">
+  <meta property="og:title" content="M3U8の仕組みを図解：HLSストリーミングを支えるプレイリストファイルの構造">
+  <meta property="og:description" content="m3u8 プレイリストの中身をやさしく解説：ヘッダータグ、TS セグメント一覧、マスターとメディアの関係、HLS プレーヤーの読み込みの流れまで。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/ja/post/1001.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"M3U8の仕組みを図解：HLSストリーミングを支えるプレイリストファイルの構造","description":"m3u8 プレイリストの中身をやさしく解説：ヘッダータグ、TS セグメント一覧、マスターとメディアの関係、HLS プレーヤーの読み込みの流れまで。","inLanguage":"ja","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/ja/post/1001.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/ja"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/ja/">ホーム</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="言語"><option value="zh">中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja" selected>日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="メニュー"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>M3U8の仕組みを図解：HLSストリーミングを支えるプレイリストファイルの構造</h1>
+<div class="article-meta">公開日 2026-10-18 · 約5分で読める</div>
+
+<div class="article-toc">
+<h4>目次</h4>
+<ol>
+<li><a href="#plaintext">行の集まりでしかないファイル</a></li>
+<li><a href="#twolayers">マスターとメディア、2種類のプレイリスト</a></li>
+<li><a href="#tagguide">出てくるタグの読み解き方</a></li>
+<li><a href="#abrflow">画質が自動で切り替わるカラクリ</a></li>
+<li><a href="#live-vod">ライブとオンデマンドで何が違うか</a></li>
+</ol>
+</div>
+
+<h2 id="plaintext">行の集まりでしかないファイル</h2>
+<p>m3u8の正体は、メモ帳でも開けるただのテキストファイルです。拡張子の見た目は威圧的ですが、理解に必要な規則は実質ひとつだけで、「#で始まる行はタグ、それ以外の行はファイルの場所」と読めば済みます。</p>
+<p>重要なのは、動画の実体がm3u8の中に含まれていない点です。書かれているのはTSセグメントと呼ばれる動画の断片への参照だけで、プレイヤーはそれを上から順に取得しては再生します。つまりm3u8は配信の「目次」兼「進行表」であり、テキストゆえにCDNで扱いやすく、配信側はリストを書き換えるだけで進行を制御できます。</p>
+
+<h2 id="twolayers">マスターとメディア、2種類のプレイリスト</h2>
+<p>HLSではm3u8が二段階に分かれて登場します。1段目の<strong>マスタープレイリスト</strong>は、用意された画質ごとに2段目への入り口を示す役割を持ちます。典型例がこちらです。</p>
+<pre><code>#EXTM3U
+#EXT-X-STREAM-INF:BANDWIDTH=2149280,RESOLUTION=1280x720
+720p/index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=965000,RESOLUTION=640x360
+360p/index.m3u8</code></pre>
+<p>このファイルは動画を一切参照しておらず、「720p版は720p/index.m3u8に、360p版は360p/index.m3u8にある」と宣言しているだけです。2段目の<strong>メディアプレイリスト</strong>になってようやく、EXTINFとTSセグメントの実体が列挙されます。単一画質の配信ではマスターが省略され、メディアプレイリストだけが直接渡されることも多いです。手元のm3u8がどちらのタイプかは、開いたときに<code>EXT-X-STREAM-INF</code>が見えるかどうかで判別できます。</p>
+
+<h2 id="tagguide">出てくるタグの読み解き方</h2>
+<p>メディアプレイリスト側でよく目にするタグを、役割順に整理します。</p>
+<ul>
+<li><code>#EXTINF</code>：直後のセグメントの再生秒数。この積み重ねが動画全体の尺になります。</li>
+<li><code>#EXT-X-TARGETDURATION</code>：セグメント長の上限値。10とあれば各断片は原則10秒以内です。</li>
+<li><code>#EXT-X-MEDIA-SEQUENCE</code>：リスト先頭セグメントの通し番号。ライブではこの値が増え続けます。</li>
+<li><code>#EXT-X-KEY</code>：AES-128など暗号化ストリームの鍵取得先。復号には鍵URLへのアクセスが必須になります。</li>
+<li><code>#EXT-X-ENDLIST</code>：「このリストで配信は完結」の合図。これが付くまで、リストは伸び続ける可能性があります。</li>
+</ul>
+
+<h2 id="abrflow">画質が自動で切り替わるカラクリ</h2>
+<p>ABR（アダプティブビットレート）は特別な魔法ではなく、選び直しの繰り返しです。プレイヤーは直近のセグメントのダウンロード所要時間から実効帯域を推定し、マスターに並ぶ候補の中から「今の帯域でも間に合う最高の画質」を選びます。</p>
+<p>ここで効いているのが、TSセグメントが断片単位で独立してデコードできる点です。そのため720pから360pへの切替は「次のセグメントから」滑らかに行えます。逆にセグメントが長いほど切替の反応は遅れます。近年はfMP4セグメントや低遅延HLSの普及もありますが、リストで進行を制御するという基本構造は変わりません。</p>
+
+<h2 id="live-vod">ライブとオンデマンドで何が違うか</h2>
+<p>同じm3u8でも、挙動は両者でかなり異なります。オンデマンドでは全セグメントが最初から並び、末尾に<code>#EXT-X-ENDLIST</code>が付きます。一方ライブではリストに最新の数セグメントだけが載り、配信が進むにつれ古い断片から順に抜け落ちていきます。これがスライディングウィンドウと呼ばれる仕組みで、過去の部分が見られなくなるのはこのためです。</p>
+<p>構造がわかれば、再生も検証もぐっと怖くなくなります。まずは手元のURLを<a href="/ja/">オンラインプレーヤー</a>で開いてみてください。ほかの切り口の解説は<a href="/ja/post/">チュートリアル</a>一覧にまとめています。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>HLS の再生・テスト・変換をブラウザにまとめたオンライン実験室。開発者にも一般ユーザーにも門戸を開く動画ツールです。</p>
+      </div>
+      <div class="footer-col"><h4>ツール</h4><ul><li><a href="/ja/">オンラインプレーヤー</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li></ul></div>
+      <div class="footer-col"><h4>リソース</h4><ul><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li><li><a href="/privacy.html">プライバシー</a></li></ul></div>
+      <div class="footer-col">
+        <h4>言語</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab All rights reserved.</span>
+      <span>動画はインターネット上の公開リソースです。お問い合わせ：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

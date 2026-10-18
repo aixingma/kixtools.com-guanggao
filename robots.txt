@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://m3u8.kixtools.com/sitemap.xml
+Sitemap: https://m3u8.kixtools.com/sitemap-0.xml

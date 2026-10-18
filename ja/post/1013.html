@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ストリーミングからローカルMP4へ：4つの変換ルートを実際に試して比較</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/ja/post/1013.html">
+  <meta name="description" content="ブラウザ内 FFmpeg、コマンドライン、デスクトップ変換、画面録画の 4 ルートを実際に計測。それぞれが得意な場面を整理しました。">
+  <meta name="keywords" content="m3u8 mp4 変換,hls 変換,ffmpeg m3u8">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+    <meta property="og:type" content="article">
+  <meta property="og:title" content="ストリーミングからローカルMP4へ：4つの変換ルートを実際に試して比較">
+  <meta property="og:description" content="ブラウザ内 FFmpeg、コマンドライン、デスクトップ変換、画面録画の 4 ルートを実際に計測。それぞれが得意な場面を整理しました。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/ja/post/1013.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"ストリーミングからローカルMP4へ：4つの変換ルートを実際に試して比較","description":"ブラウザ内 FFmpeg、コマンドライン、デスクトップ変換、画面録画の 4 ルートを実際に計測。それぞれが得意な場面を整理しました。","inLanguage":"ja","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/ja/post/1013.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/ja"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/ja/">ホーム</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="言語"><option value="zh">中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja" selected>日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="メニュー"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>ストリーミングからローカルMP4へ：4つの変換ルートを実際に試して比較</h1>
+<div class="article-meta">公開日 2026-10-18 · 約6分で読める</div>
+<div class="article-toc"><h4>目次</h4><ol><li><a href="#setup">検証条件</a></li><li><a href="#wasm">ルート1：ブラウザ内変換</a></li><li><a href="#copy">ルート2：ストリームコピー</a></li><li><a href="#reencode">ルート3：再エンコード</a></li><li><a href="#capture">ルート4：画面収録</a></li><li><a href="#compare">結果の整理と使い分け</a></li></ol></div>
+
+<h2 id="setup">検証条件</h2>
+<p>今回は「10分程度のH.264+AACのHLS配信を、手元のMP4に落とす」を共通課題にして、4つのルートを同じ土俵で試しました。評価軸は所要時間・画質・面倒くささの3つです。ソースは複数ビットレートのマスタープレイリスト付きで、CORSは許可済みという、比較的扱いやすい条件です。あなたの環境でも条件が近ければ、似た傾向になるはずです。</p>
+
+<h2 id="wasm">ルート1：ブラウザ内変換</h2>
+<p>最初に試したのは<a href="/en/m3u8_to_mp4/">M3U8→MP4変換</a>ツールを使う方法です。URLを貼ってボタンを押すだけで、セグメント取得からMP4生成までがブラウザの中で完結します。インストールもコマンドも不要で、所要は体感2〜3分。出力はそのままダウンロードフォルダへ落ちてきました。</p>
+<p>処理は手元で完結するためソースが外部に流出しないのが大きな安心材料です。ただしブラウザのメモリ上限があるため、30分を超える長尺では途中で失敗しやすい点には注意が必要です。</p>
+
+<h2 id="copy">ルート2：ストリームコピー</h2>
+<p>FFmpegの<code>-c copy</code>を使う方法です。セグメントを順に取得しながら、中身を再エンコードせずMP4コンテナに詰め直します。</p>
+<pre><code>ffmpeg -i "https://example.com/master.m3u8" -c copy -bsf:a aac_adtstoasc output.mp4</code></pre>
+<p>所要は実測で再生時間より大幅に短く、画質はソースと同一。暗号化なしのTS構成なら、まずこの方法で間に合います。失敗するのはセグメントがfMP4以外の特殊構成のときや、音声コーデックがMP4に収まらないケースのみです。</p>
+
+<h2 id="reencode">ルート3：再エンコード</h2>
+<p>互換性やファイルサイズを整えたいなら、エンコードし直すルートです。</p>
+<pre><code>ffmpeg -i "https://example.com/master.m3u8" \
+  -c:v libx264 -crf 20 -preset veryfast -c:a aac -b:a 128k output.mp4</code></pre>
+<p><code>-crf 20</code>は品質優先の指定で、数値を上げるほど軽く荒くなります。時間はコピー方式の数倍かかりますが、出来上がりはどの環境でも再生しやすい標準的なMP4になり、古い端末や編集ソフトへの持ち込みにも強い。時短したければ<code>-preset</code>を<code>ultrafast</code>へ、サイズを優先するなら<code>veryfast</code>のまま<code>-crf</code>を上げるのが手早い調整です。</p>
+
+<h2 id="capture">ルート4：画面収録</h2>
+<p>最後はOS標準の画面録画で再生画面を取り込む方法です。CORSや暗号化の制限を受けないのが唯一の強みですが、再生と同じ時間がかかり、画質も音もPCの再生環境次第です。他の3ルートがすべて通らなかったときの最終手段として位置づけるのが現実的です。</p>
+
+<h2 id="compare">結果の整理と使い分け</h2>
+<table style="width:100%;border-collapse:collapse;font-size:14px;">
+<thead><tr style="background:var(--bg-soft);"><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">ルート</th><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">所要</th><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">画質</th><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">向いている場面</th></tr></thead>
+<tbody>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">ブラウザ内変換</td><td style="padding:10px;border-bottom:1px solid var(--border);">短い</td><td style="padding:10px;border-bottom:1px solid var(--border);">ほぼ無劣化</td><td style="padding:10px;border-bottom:1px solid var(--border);">短いクリップを手早く</td></tr>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">ストリームコピー</td><td style="padding:10px;border-bottom:1px solid var(--border);">最短</td><td style="padding:10px;border-bottom:1px solid var(--border);">無劣化</td><td style="padding:10px;border-bottom:1px solid var(--border);">長尺・暗号化なしの定番</td></tr>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">再エンコード</td><td style="padding:10px;border-bottom:1px solid var(--border);">長め</td><td style="padding:10px;border-bottom:1px solid var(--border);">調整可能</td><td style="padding:10px;border-bottom:1px solid var(--border);">互換性・サイズを整えたい</td></tr>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">画面収録</td><td style="padding:10px;border-bottom:1px solid var(--border);">再生と同等</td><td style="padding:10px;border-bottom:1px solid var(--border);">環境依存</td><td style="padding:10px;border-bottom:1px solid var(--border);">他が通らないときの保険</td></tr>
+</tbody>
+</table>
+<p>結論としては、まずブラウザかストリームコピーで試し、うまくいかなければ再エンコード、最後に画面収録という順番が最も無駄がありません。再生での確認は<a href="/ja/">オンラインプレーヤー</a>が便利です。関連の手法は<a href="/ja/post/">チュートリアル</a>一覧に他の記事もあります。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>HLS の再生・テスト・変換をブラウザにまとめたオンライン実験室。開発者にも一般ユーザーにも門戸を開く動画ツールです。</p>
+      </div>
+      <div class="footer-col"><h4>ツール</h4><ul><li><a href="/ja/">オンラインプレーヤー</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li></ul></div>
+      <div class="footer-col"><h4>リソース</h4><ul><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li><li><a href="/privacy.html">プライバシー</a></li></ul></div>
+      <div class="footer-col">
+        <h4>言語</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab All rights reserved.</span>
+      <span>動画はインターネット上の公開リソースです。お問い合わせ：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

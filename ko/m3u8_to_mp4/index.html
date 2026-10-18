@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>온라인 M3U8→MP4 변환 — 브라우저에서 끝까지, 파일은 기기를 벗어나지 않음 | M3U8Lab</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/ko/m3u8_to_mp4/">
+  <meta name="description" content="브라우저 안에서 HLS 스트림을 MP4로: 재생 목록 자동 파싱, 동시 세그먼트 다운로드, FFmpeg 리먹스까지 어디에도 업로드되지 않습니다.">
+  <meta name="keywords" content="m3u8 mp4 변환,온라인 hls 변환,m3u8 다운로드">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+<script src="/js/ffmpeg/ffmpeg.js"></script>
+    <meta property="og:type" content="website">
+  <meta property="og:title" content="온라인 M3U8→MP4 변환 — 브라우저에서 끝까지, 파일은 기기를 벗어나지 않음 | M3U8Lab">
+  <meta property="og:description" content="브라우저 안에서 HLS 스트림을 MP4로: 재생 목록 자동 파싱, 동시 세그먼트 다운로드, FFmpeg 리먹스까지 어디에도 업로드되지 않습니다.">
+  <meta property="og:url" content="https://m3u8.kixtools.com/ko/m3u8_to_mp4/">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"온라인 M3U8→MP4 변환 — 브라우저에서 끝까지, 파일은 기기를 벗어나지 않음 | M3U8Lab","url":"https://m3u8.kixtools.com/ko/m3u8_to_mp4/","inLanguage":"ko","description":"브라우저 안에서 HLS 스트림을 MP4로: 재생 목록 자동 파싱, 동시 세그먼트 다운로드, FFmpeg 리먹스까지 어디에도 업로드되지 않습니다."}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/ko"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/ko/">홈</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 MP4 변환</a></li><li><a href="/vlc/">VLC 플레이어</a></li><li><a href="/ko/post/">튜토리얼</a></li><li><a href="/ko/about.html">소개</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="언어"><option value="zh">中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko" selected>한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="메뉴"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<div class="convert-wrap"><div class="convert-card">
+<h1>M3U8 → MP4</h1>
+<p class="lead">m3u8 비디오 링크를 입력하면 브라우저에서 MP4 파일로 변환하여 다운로드합니다.<br>프론트엔드에서 처리되어 비디오가 서버에 업로드되지 않습니다.</p>
+<form class="player-form" id="convertForm" autocomplete="off">
+<input type="text" name="url" id="url" placeholder="m3u8 링크를 입력하세요 (예: https://.../index.m3u8)" value="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8">
+<button type="submit" id="submitBtn">변환 시작</button>
+</form>
+<div class="convert-status" id="status">m3u8 링크 입력 대기 중…</div>
+<div class="convert-progress" id="progress"><div class="convert-progress-bar" id="progressBar"></div></div>
+<div class="alert alert-info" style="margin-top:24px;"><strong>사용 안내:</strong><ul style="margin:8px 0 0 18px;"><li>CORS를 허용하는 m3u8 및 ts 조각만 지원되며 짧은 영상에 적합합니다.</li><li>변환은 브라우저 로컬에서 완료되며, 최초 실행 시 FFmpeg 코어(약 25MB)를 다운로드합니다.</li><li>소스가 핫링크 방지나 CORS를 허용하지 않으면 변환할 수 없습니다.</li></ul></div>
+</div></div>
+<section class="section section-alt"><div class="container"><div class="section-head"><h2>변환 과정</h2><p>도구의 작동 원리</p></div><div class="steps">
+<div class="step"><h4>재생 목록 파싱</h4><p>m3u8 파일을 읽어 모든 ts 조각 주소를 추출합니다.</p></div>
+<div class="step"><h4>조각 다운로드</h4><p>모든 ts 비디오 조각을 브라우저 메모리에 다운로드합니다.</p></div>
+<div class="step"><h4>병합 및 트랜스코딩</h4><p>FFmpeg로 조각을 병합하고 MP4로 패키징합니다.</p></div>
+<div class="step"><h4>다운로드 저장</h4><p>변환 완료 후 MP4 파일을 자동으로 다운로드합니다.</p></div>
+</div></div></section>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>HLS 스트리밍 재생·테스트·변환을 브라우저 안에 담은 온라인 실험실, 개발자와 일반 사용자 모두를 위한 영상 도구입니다.</p>
+      </div>
+      <div class="footer-col"><h4>도구</h4><ul><li><a href="/ko/">온라인 플레이어</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 MP4 변환</a></li><li><a href="/vlc/">VLC 플레이어</a></li></ul></div>
+      <div class="footer-col"><h4>리소스</h4><ul><li><a href="/ko/post/">튜토리얼</a></li><li><a href="/ko/about.html">소개</a></li><li><a href="/privacy.html">개인정보</a></li></ul></div>
+      <div class="footer-col">
+        <h4>언어</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab. All rights reserved.</span>
+      <span>영상은 인터넷 공개 자원입니다. 문의: aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>
+const FFMPEG_BASE = '/js/ffmpeg';
+const util = (typeof FFmpegUtil !== 'undefined' && FFmpegUtil) ? FFmpegUtil : null;
+const hasFFmpeg = !!(typeof FFmpegWASM !== 'undefined' && FFmpegWASM && FFmpegWASM.FFmpeg && util);
+const fetchFile = util ? util.fetchFile : null;
+const ffmpeg = hasFFmpeg ? new FFmpegWASM.FFmpeg() : null;
+// 엔진과 코어 모두 자체 호스팅: ffmpeg.js가 같은 디렉터리의 worker(814.ffmpeg.js)를 자동으로 불러오고 core/wasm도 동일 출처 경로로 로드됩니다. classWorkerURL 불필요, 외부 CDN 무의존.
+async function loadFFmpeg(){if(ffmpeg.loaded)return;await ffmpeg.load({coreURL:FFMPEG_BASE+'/ffmpeg-core.js',wasmURL:FFMPEG_BASE+'/ffmpeg-core.wasm'});}
+const statusEl = document.getElementById('status');
+const progressEl = document.getElementById('progress');
+const progressBar = document.getElementById('progressBar');
+const btn = document.getElementById('submitBtn');
+function setStatus(m){statusEl.textContent=m;}
+function setProgress(p){progressEl.classList.add('show');progressBar.style.width=p+'%';}
+function resolveUrl(base,href){try{return new URL(href,base).href;}catch(e){return href;}}
+async function parseM3U8(url,depth){depth=depth||0;const res=await fetch(url);if(!res.ok)throw new Error('m3u8 파일을 가져올 수 없습니다 (HTTP '+res.status+')');const text=await res.text();const lines=text.split(/\r?\n/);const segments=[];let variant=null,variantBw=-1,pendingBw=-1,isVariantUri=false;for(const line of lines){const t=line.trim();if(t.startsWith('#EXT-X-STREAM-INF')){const bw=/BANDWIDTH=(\d+)/.exec(t);pendingBw=bw?parseInt(bw[1],10):0;isVariantUri=true;continue;}if(!t||t.startsWith('#'))continue;/* #EXT-X-STREAM-INF 다음 줄의 URI는 변형 재생목록이며 조각이 아닙니다 */if(isVariantUri){isVariantUri=false;if(pendingBw>variantBw){variantBw=pendingBw;variant=resolveUrl(url,t);}continue;}segments.push(resolveUrl(url,t));}
+// 마스터 재생목록에는 조각이 없으므로 대역폭이 가장 높은 화질을 선택해 재귀 분석합니다
+if(segments.length===0&&variant&&depth<3)return parseM3U8(variant,depth+1);if(segments.length===0)throw new Error('m3u8 파일에서 비디오 조각을 찾을 수 없습니다');return segments;}
+document.getElementById('convertForm').addEventListener('submit',async function(e){e.preventDefault();const url=document.getElementById('url').value.trim();if(!url){setStatus('m3u8 링크를 입력하세요');return;}if(!ffmpeg){setStatus('❌ 트랜스코딩 엔진을 불러오지 못했습니다. 네트워크 확인 후 새로고침해 주세요.');return;}btn.disabled=true;setProgress(0);try{setStatus('m3u8 재생 목록 파싱 중…');const segments=await parseM3U8(url);setStatus('총 '+segments.length+'개 조각을 찾았습니다. 다운로드 중…');const ffmpegPromise=loadFFmpeg();let MAX_PAR=6;try{const nav=performance.getEntriesByType('navigation')[0];if(nav&&(nav.nextHopProtocol==='h2'||nav.nextHopProtocol==='h3'))MAX_PAR=12;}catch(e){}const blobs=new Array(segments.length);let cursor=0,done=0;async function dl(){while(cursor<segments.length){const i=cursor++;const r=await fetch(segments[i]);if(!r.ok)throw new Error('조각 다운로드 실패: '+segments[i]);blobs[i]=await r.arrayBuffer();done++;setProgress(Math.round((done/segments.length)*60));setStatus('조각 다운로드 중 '+done+' / '+segments.length);}}await Promise.all(Array.from({length:Math.min(MAX_PAR,segments.length)},dl));setStatus('조각 병합 중…');const merged=new Blob(blobs,{type:'video/mp2t'});setStatus('FFmpeg 코어 로딩 중…');await ffmpegPromise;setStatus('MP4로 트랜스코딩 중…');await ffmpeg.writeFile('input.ts',await fetchFile(merged));await ffmpeg.exec(['-i','input.ts','-c','copy','-bsf:a','aac_adtstoasc','output.mp4']);const data=await ffmpeg.readFile('output.mp4');setProgress(100);setStatus('변환 완료, 다운로드 중…');const outBlob=new Blob([data],{type:'video/mp4'});const a=document.createElement('a');a.href=URL.createObjectURL(outBlob);a.download='m3u8_'+Date.now()+'.mp4';document.body.appendChild(a);a.click();a.remove();setStatus('✅ 변환 완료! 파일이 다운로드되었습니다.');}catch(err){console.error(err);setStatus('❌ 변환 실패: '+err.message+' (CORS 제한이나 링크 만료일 수 있습니다)');}finally{btn.disabled=false;}});
+document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});
+document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});
+document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});
+</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

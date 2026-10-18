@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用 VLC 播放 m3u8：下载指引与参数配置 | M3U8Lab</title>
+  <link rel="canonical" href="https://m3u8.kixtools.com/vlc/">
+  <meta name="description" content="VLC 官方下载入口与 m3u8 网络串流播放配置教程，含缓存调节、循环与画面参数建议，适合需要本地播放能力的用户。">
+  <meta name="keywords" content="vlc下载,vlc播放m3u8,vlc设置,网络串流,本地播放器">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="stylesheet" href="/css/main.css">
+    <meta property="og:type" content="website">
+  <meta property="og:title" content="用 VLC 播放 m3u8：下载指引与参数配置 | M3U8Lab">
+  <meta property="og:description" content="VLC 官方下载入口与 m3u8 网络串流播放配置教程，含缓存调节、循环与画面参数建议，适合需要本地播放能力的用户。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/vlc/">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"用 VLC 播放 m3u8：下载指引与参数配置 | M3U8Lab","url":"https://m3u8.kixtools.com/vlc/","inLanguage":"zh-CN","description":"VLC 官方下载入口与 m3u8 网络串流播放配置教程，含缓存调节、循环与画面参数建议，适合需要本地播放能力的用户。"}</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/">首页</a></li><li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li><li><a href="/vlc/">VLC 播放器</a></li><li><a href="/post/">教程中心</a></li><li><a href="/about.html">关于</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="语言"><option value="zh" selected>中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="eyebrow">开源播放器 · 完全免费</span>
+      <h1>VLC 播放器</h1>
+      <p class="lead">把 m3u8 网络串流搬进本地桌面的老牌开源播放器，Windows、macOS、Linux、Android、iOS 全线覆盖。</p>
+      <div class="hero-actions">
+        <a href="https://www.videolan.org/vlc/" target="_blank" rel="noopener" class="btn btn-primary btn-lg">官网获取安装包</a>
+        <a href="#guide" class="btn btn-ghost btn-lg">查看播放教程</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>VLC 值得常驻设备的理由</h2>
+        <p>面对挑剔的 m3u8 源，桌面级解码能力往往就是那把钥匙</p>
+      </div>
+      <div class="grid">
+        <div class="card"><div class="card-icon">🎬</div><h3>解码全才</h3><p>从 m3u8 网络串流到 MP4、MKV、AVI、FLV 本地文件，常见音视频容器一条龙吃下，解码器开箱自带。</p></div>
+        <div class="card"><div class="card-icon">📡</div><h3>串流直连</h3><p>HLS、RTSP、RTMP 协议直接填地址就能开播，网络直播源拿来即放。</p></div>
+        <div class="card"><div class="card-icon">🖥️</div><h3>全端一致</h3><p>桌面三大系统与移动端双平台均有官方版本，换了设备也不用重新适应。</p></div>
+        <div class="card"><div class="card-icon">🛡️</div><h3>纯净开源</h3><p>源代码完全公开，不插广告、不做捆绑、不上报隐私，可以放心长期使用。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="guide">
+    <div class="container" style="max-width:820px;">
+      <div class="section-head">
+        <h2>四步开播：VLC 播放 m3u8 全流程</h2>
+        <p>按下面的顺序操作，一分钟内让串流跑起来</p>
+      </div>
+      <div class="card">
+        <ol style="line-height:2.2;font-size:15px;">
+          <li>前往 <a href="https://www.videolan.org/vlc/" target="_blank" rel="noopener">VLC 官网</a> 获取安装包，按自己的系统完成安装。</li>
+          <li>启动 VLC，在菜单栏选择 <strong>媒体 → 打开网络串流</strong>，习惯键盘操作的话直接按 Ctrl+N。</li>
+          <li>把复制好的 m3u8 地址填进弹窗的输入框。</li>
+          <li>回车或点击 <strong>播放</strong>，稍等片刻，串流画面就会出现在窗口中。</li>
+        </ol>
+        <div class="alert alert-info" style="margin-top:18px;">
+          💡 <strong>小技巧：</strong>如果画面走走停停，前往 <strong>工具 → 首选项 → 输入/编解码器</strong>，把网络缓存调大（1000-3000 ms 通常立竿见影）。
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px;">
+        <h2 style="font-size:22px;color:var(--ink-900);margin-bottom:14px;">顺手好记的快捷键</h2>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
+          <div><strong>空格</strong> — 播放与暂停</div>
+          <div><strong>F</strong> — 进入/退出全屏</div>
+          <div><strong>←/→</strong> — 前跳或回退 10 秒</div>
+          <div><strong>↑/↓</strong> — 调高调低音量</div>
+          <div><strong>M</strong> — 一键静音</div>
+          <div><strong>S</strong> — 抓取当前画面</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px;">
+        <h2 style="font-size:22px;color:var(--ink-900);margin-bottom:14px;">在线播放器还是桌面 VLC？</h2>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead>
+            <tr style="background:var(--bg-soft);">
+              <th style="text-align:left;padding:12px;border-bottom:1px solid var(--border);">对比项</th>
+              <th style="text-align:left;padding:12px;border-bottom:1px solid var(--border);">本站在线播放器</th>
+              <th style="text-align:left;padding:12px;border-bottom:1px solid var(--border);">VLC 桌面端</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:12px;border-bottom:1px solid var(--border);">安装</td><td style="padding:12px;border-bottom:1px solid var(--border);">打开网页即用</td><td style="padding:12px;border-bottom:1px solid var(--border);">安装一次长期可用</td></tr>
+            <tr><td style="padding:12px;border-bottom:1px solid var(--border);">跨域限制</td><td style="padding:12px;border-bottom:1px solid var(--border);">受跨域策略约束</td><td style="padding:12px;border-bottom:1px solid var(--border);">不受跨域约束</td></tr>
+            <tr><td style="padding:12px;border-bottom:1px solid var(--border);">格式支持</td><td style="padding:12px;border-bottom:1px solid var(--border);">HLS / m3u8 流</td><td style="padding:12px;border-bottom:1px solid var(--border);">全格式覆盖</td></tr>
+            <tr><td style="padding:12px;border-bottom:1px solid var(--border);">适用场景</td><td style="padding:12px;border-bottom:1px solid var(--border);">即开即测、嵌入网页</td><td style="padding:12px;border-bottom:1px solid var(--border);">离线观影、深度调试</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>一个把 HLS 流媒体播放、测试与转换装进浏览器的在线实验室，为开发者与普通观众提供零门槛的视频工具。</p>
+      </div>
+      <div class="footer-col"><h4>工具</h4><ul><li><a href="/">在线播放器</a></li><li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li><li><a href="/vlc/">VLC 播放器</a></li></ul></div>
+      <div class="footer-col"><h4>资源</h4><ul><li><a href="/post/">教程中心</a></li><li><a href="/about.html">关于本站</a></li><li><a href="/privacy.html">隐私政策</a></li></ul></div>
+      <div class="footer-col">
+        <h4>语言</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab · 保留所有权利</span>
+      <span>视频资源均来自互联网，侵权反馈请致：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('language-selector').addEventListener('change', function () {
+    var v = this.value, p = window.location.pathname;
+    var map = { zh: '', en: '/en', pt: '/pt', ja: '/ja', ko: '/ko' };
+    var clean = p.replace(/^\/(en|pt|ja|ko)/, '') || '/';
+    window.location.href = (map[v] || '') + clean;
+  });
+  document.getElementById('menuToggle').addEventListener('click', function (e) {
+    e.stopPropagation();
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  document.body.addEventListener('click', function () { document.getElementById('navLinks').classList.remove('open'); });
+</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

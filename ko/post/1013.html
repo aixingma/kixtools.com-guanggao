@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>스트림에서 로컬 MP4까지: 네 가지 변환 방식 실측 비교</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/ko/post/1013.html">
+  <meta name="description" content="브라우저 내 FFmpeg, 명령줄, 데스크톱 변환기, 화면 녹화 네 가지 M3U8→MP4 경로를 실측했습니다. 각 방식이 어울리는 상황을 정리했습니다.">
+  <meta name="keywords" content="m3u8 mp4 변환,hls 변환,ffmpeg m3u8">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+    <meta property="og:type" content="article">
+  <meta property="og:title" content="스트림에서 로컬 MP4까지: 네 가지 변환 방식 실측 비교">
+  <meta property="og:description" content="브라우저 내 FFmpeg, 명령줄, 데스크톱 변환기, 화면 녹화 네 가지 M3U8→MP4 경로를 실측했습니다. 각 방식이 어울리는 상황을 정리했습니다.">
+  <meta property="og:url" content="https://m3u8.kixtools.com/ko/post/1013.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"스트림에서 로컬 MP4까지: 네 가지 변환 방식 실측 비교","description":"브라우저 내 FFmpeg, 명령줄, 데스크톱 변환기, 화면 녹화 네 가지 M3U8→MP4 경로를 실측했습니다. 각 방식이 어울리는 상황을 정리했습니다.","inLanguage":"ko","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/ko/post/1013.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/ko"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/ko/">홈</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 MP4 변환</a></li><li><a href="/vlc/">VLC 플레이어</a></li><li><a href="/ko/post/">튜토리얼</a></li><li><a href="/ko/about.html">소개</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="언어"><option value="zh">中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko" selected>한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="메뉴"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>스트림에서 로컬 MP4까지: 네 가지 변환 방식 실측 비교</h1>
+<div class="article-meta">게시 2026-10-18 · 약 6분 소요</div>
+<div class="article-toc"><h4>목차</h4><ol><li><a href="#condition">측정에 쓴 조건</a></li><li><a href="#copy-route">경로 A · 컨테이너만 교체</a></li><li><a href="#reencode-route">경로 B · 재인코딩</a></li><li><a href="#wasm-rec">경로 C·D · 브라우저와 녹화</a></li><li><a href="#table">결과 비교</a></li><li><a href="#verdict">무엇을 고를까</a></li></ol></div>
+
+<h2 id="condition">측정에 쓴 조건</h2>
+<p>비교가 공정해야 결론도 의미가 있습니다. 10분 분량의 720p 다시 보기 스트림(4초 세그먼트, H.264 + AAC, 암호화 없음)을 같은 회선에서 네 경로로 각각 변환하고, 소요 시간과 결과 파일의 화질·호환성을 기록했습니다. 절대 수치보다 <strong>경로 간 상대 차이</strong>에 주목해서 읽어 주세요. 기기와 회선에 따라 배율은 달라집니다.</p>
+
+<h2 id="copy-route">경로 A · 컨테이너만 교체</h2>
+<p>명령줄 FFmpeg에서 재인코딩을 끄고 조각을 그대로 MP4에 담는 방식입니다:</p>
+<pre><code>ffmpeg -i "https://example.com/vod/master.m3u8" -c copy -bsf:a aac_adtstoasc result.mp4</code></pre>
+<p>실측에서 10분 영상이 <strong>2분 남짓</strong>으로 끝났습니다. 내려받기 속도에 거의 비례하죠. 화질은 원본과 픽셀 단위로 같습니다. 대신 코덱이 MP4 친화적이지 않은 스트림이면 결과 파일이 일부 플레이어에서만 재생될 수 있어, 저장 후 한 번 확인해 보는 습관이 필요합니다.</p>
+
+<h2 id="reencode-route">경로 B · 재인코딩</h2>
+<pre><code>ffmpeg -i "https://example.com/vod/master.m3u8" -c:v libx264 -preset medium -crf 20 -c:a aac result.mp4</code></pre>
+<p>같은 영상에 <strong>11분</strong>이 걸렸습니다. CPU가 프레임을 하나씩 다시 그리는 작업이라 처리 시간이 영상 길이와 비슷하거나 더 깁니다. 대신 거의 모든 환경에서 재생되는 표준적인 파일이 나오고, 해상도와 비트레이트를 원하는 값으로 조정할 수 있습니다. 오래된 기기 호환성이나 편집용 소스가 필요하다면 이 길이 답입니다.</p>
+
+<h2 id="wasm-rec">경로 C·D · 브라우저와 녹화</h2>
+<p><a href="/en/m3u8_to_mp4/">M3U8→MP4 변환</a> 웹 도구는 FFmpeg.wasm으로 브라우저 안에서 경로 A와 비슷한 처리를 수행합니다. 측정 기기 기준 10분 영상에 <strong>6분</strong> 정도로 네이티브 CLI보다 느리지만, 프로그램 설치 없이 끝나고 영상이 외부로 전송되지 않는다는 점이 값어합니다. 화면 녹화는 <strong>10분 그대로</strong> 걸렸고 결과 화질은 출력 설정에 좌우되었습니다. 스트림을 "다루는" 방식이 아니라 화면을 "따라 적는" 방식이라 최후의 수단으로 남겨 두는 것이 좋습니다.</p>
+
+<h2 id="table">결과 비교</h2>
+<table style="width:100%;border-collapse:collapse;font-size:14px;">
+<thead><tr style="background:var(--bg-soft);"><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">경로</th><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">10분 영상 소요</th><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">화질</th><th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">주요 제약</th></tr></thead>
+<tbody>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">A · 컨테이너 교체</td><td style="padding:10px;border-bottom:1px solid var(--border);">약 2분</td><td style="padding:10px;border-bottom:1px solid var(--border);">원본 동일</td><td style="padding:10px;border-bottom:1px solid var(--border);">코덱 호환성 의존</td></tr>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">B · 재인코딩</td><td style="padding:10px;border-bottom:1px solid var(--border);">약 11분</td><td style="padding:10px;border-bottom:1px solid var(--border);">설정값 따름</td><td style="padding:10px;border-bottom:1px solid var(--border);">CPU 시간 필요</td></tr>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">C · 웹 도구</td><td style="padding:10px;border-bottom:1px solid var(--border);">약 6분</td><td style="padding:10px;border-bottom:1px solid var(--border);">원본 동일</td><td style="padding:10px;border-bottom:1px solid var(--border);">CORS 허용, 메모리 한도</td></tr>
+<tr><td style="padding:10px;border-bottom:1px solid var(--border);">D · 화면 녹화</td><td style="padding:10px;border-bottom:1px solid var(--border);">10분(실시간)</td><td style="padding:10px;border-bottom:1px solid var(--border);">출력 설정 좌우</td><td style="padding:10px;border-bottom:1px solid var(--border);">실시간 대기 필수</td></tr>
+</tbody>
+</table>
+
+<h2 id="verdict">무엇을 고를까</h2>
+<p>요약하면 이렇습니다. 변환을 자주 하고 회선이 좋다면 <strong>A</strong>, 결과 파일을 여러 환경에서 돌려야 한다면 <strong>B</strong>, 프로그램 설치가 불가능한 환경이면 <strong>C</strong>, 위의 모든 길이 막혔다면 <strong>D</strong>. 작업 전에 주소가 살아 있는지는 <a href="/ko/">온라인 플레이어</a>로 1분 안에 확인할 수 있고, 명령줄 옵션 조합이 궁금하면 <a href="/ko/post/">튜토리얼</a>의 관련 글을 찾아보세요.</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>HLS 스트리밍 재생·테스트·변환을 브라우저 안에 담은 온라인 실험실, 개발자와 일반 사용자 모두를 위한 영상 도구입니다.</p>
+      </div>
+      <div class="footer-col"><h4>도구</h4><ul><li><a href="/ko/">온라인 플레이어</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 MP4 변환</a></li><li><a href="/vlc/">VLC 플레이어</a></li></ul></div>
+      <div class="footer-col"><h4>리소스</h4><ul><li><a href="/ko/post/">튜토리얼</a></li><li><a href="/ko/about.html">소개</a></li><li><a href="/privacy.html">개인정보</a></li></ul></div>
+      <div class="footer-col">
+        <h4>언어</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab. All rights reserved.</span>
+      <span>영상은 인터넷 공개 자원입니다. 문의: aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

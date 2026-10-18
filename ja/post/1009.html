@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>オンラインのM3U8動画をPCに保存する4つの現実的な方法</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/ja/post/1009.html">
+  <meta name="description" content="ブラウザ変換・FFmpeg・録画・デスクトップアプリなど、m3u8 をローカルに保存する 4 つの方法を得失込みで比較します。">
+  <meta name="keywords" content="m3u8 保存,動画 ダウンロード,hls ダウンロード">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+    <meta property="og:type" content="article">
+  <meta property="og:title" content="オンラインのM3U8動画をPCに保存する4つの現実的な方法">
+  <meta property="og:description" content="ブラウザ変換・FFmpeg・録画・デスクトップアプリなど、m3u8 をローカルに保存する 4 つの方法を得失込みで比較します。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/ja/post/1009.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"オンラインのM3U8動画をPCに保存する4つの現実的な方法","description":"ブラウザ変換・FFmpeg・録画・デスクトップアプリなど、m3u8 をローカルに保存する 4 つの方法を得失込みで比較します。","inLanguage":"ja","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/ja/post/1009.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/ja"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/ja/">ホーム</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="言語"><option value="zh">中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja" selected>日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="メニュー"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>オンラインのM3U8動画をPCに保存する4つの現実的な方法</h1>
+<div class="article-meta">公開日 2026-10-18 · 約6分で読める</div>
+<div class="article-toc"><h4>目次</h4><ol><li><a href="#choose">どの方法を選ぶべきか</a></li><li><a href="#web">方法1：ブラウザだけで完結させる</a></li><li><a href="#cli">方法2：FFmpegを叩く</a></li><li><a href="#tool">方法3：ダウンロード専用ツールを使う</a></li><li><a href="#screen">方法4：画面録画という最終手段</a></li><li><a href="#mind">保存の前にひとつだけ確認</a></li></ol></div>
+
+<h2 id="choose">どの方法を選ぶべきか</h2>
+<p>一言で「m3u8を保存」といっても、状況によって最適解は変わります。短い動画ですぐ試したいなら方法1、長尺や暗号化付きなら方法2、プレイリスト運用のソースを定期的拾うなら方法3、どの手段も通らないソースなら方法4、というのが大まかな目安です。以下、それぞれの手順と得意・不得意を順に見ていきます。</p>
+
+<h2 id="web">方法1：ブラウザだけで完結させる</h2>
+<p>もっとも手軽なのは、<a href="/en/m3u8_to_mp4/">M3U8→MP4変換</a>ページにURLを貼るだけの方法です。ダウンロードとMP4へのまとめ処理がブラウザ内で終わり、インストール作業は一切ありません。処理が手元のPCで完結するため、プライベートなソースを外部に送りたくない場面でも安心です。</p>
+<p>弱点は明快で、CORSを許可していない配信元は処理できないこと、そして長尺動画はブラウザのメモリ制限に当たりやすいこと。数分程度のクリップに向いた方法と覚えておけば間違いありません。</p>
+
+<h2 id="cli">方法2：FFmpegを叩く</h2>
+<p>本気で使うならFFmpeg一択です。コマンド1行でセグメントの取得から結合までやってくれ、再生リストがTS形式で構成されている場合は再エンコードなしでMP4に詰め替えられます。</p>
+<pre><code>ffmpeg -i "https://example.com/live/index.m3u8" -c copy -bsf:a aac_adtstoasc movie.mp4</code></pre>
+<p><code>-c copy</code>は映像と音声をそのままコピーする指定で、変換が速く画質も無劣化です。TS由来の音声ビットストリームはそのままではMP4に収まらないことがあるため、<code>-bsf:a aac_adtstoasc</code>を添えるのが実用上のコツです。AES-128で暗号化されたプレイリストも、鍵URLにアクセスできる環境なら自動で復号しながら取得します。中断した場合は再実行で続きから拾われず最初からになりますが、長尺ソースでも安定して完走しやすいのが利点です。</p>
+
+<h2 id="tool">方法3：ダウンロード専用ツールを使う</h2>
+<p>yt-dlpのような専用ツールも有力な選択肢です。m3u8に対応しており、品質選択やメタデータ付与、中断からの再開などをコマンドオプションで細かく制御できます。</p>
+<pre><code>yt-dlp --merge-output-format mp4 "https://example.com/live/index.m3u8"</code></pre>
+<p>マスタープレイリストから画質一覧を取得して最適なストリームを自動選択してくれるため、複数ビットレートのソースでも迷いません。定期的に同じチャンネルやシリーズを拾う運用では、FFmpegより手間が少なく感じられるはずです。</p>
+
+<h2 id="screen">方法4：画面録画という最終手段</h2>
+<p>DRM保護が強い、認証が複雑、プレイヤーが独自実装でダウンロードが一切成立しない――そんなソースには、再生画面を録画する方法だけが残ります。OS標準の録画機能でも出力は可能ですが、リアルタイム再生が必要なぶん時間がかかり、画質と音質は再生環境そのものに引きずられます。あくまで他の方法がすべて不通のときの保険です。</p>
+
+<h2 id="mind">保存の前にひとつだけ確認</h2>
+<p>どの方法でも、ソースの著作権と利用規約の確認だけは飛ばさないでください。個人的な視聴用の保存が許容される範囲を超えた再配布や二次利用はトラブルの元です。保存したファイルは手元のプレイヤー（VLCやOS標準アプリ）で再生確認し、問題があれば<a href="/ja/post/">チュートリアル</a>の変換関連記事も参照してください。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>HLS の再生・テスト・変換をブラウザにまとめたオンライン実験室。開発者にも一般ユーザーにも門戸を開く動画ツールです。</p>
+      </div>
+      <div class="footer-col"><h4>ツール</h4><ul><li><a href="/ja/">オンラインプレーヤー</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li></ul></div>
+      <div class="footer-col"><h4>リソース</h4><ul><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li><li><a href="/privacy.html">プライバシー</a></li></ul></div>
+      <div class="footer-col">
+        <h4>言語</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab All rights reserved.</span>
+      <span>動画はインターネット上の公開リソースです。お問い合わせ：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

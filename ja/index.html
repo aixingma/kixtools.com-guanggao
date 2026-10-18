@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M3U8Lab — ブラウザで完結するHLS再生・テストツール、インストール不要</title>
+  <link rel="canonical" href="https://m3u8.kixtools.com/ja/">
+  <meta name="description" content="m3u8 のリンクを貼るだけで即再生。アダプティブビットレート対応のブラウザ型 HLS プレーヤーで、M3U8→MP4 変換や iframe 埋め込みにも対応します。">
+  <meta name="keywords" content="m3u8 プレーヤー,hls 再生,ブラウザ 動画,m3u8 mp4 変換">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/js/jquery.min.js"></script>
+  <link href="https://web.sdk.qcloud.com/player/tcplayer/release/v5.1.0/tcplayer.min.css" rel="stylesheet">
+  <script src="https://web.sdk.qcloud.com/player/tcplayer/release/v5.1.0/tcplayer.v5.1.0.min.js"></script>
+  <script src="/js/config.js"></script>
+    <meta property="og:type" content="website">
+  <meta property="og:title" content="M3U8Lab — ブラウザで完結するHLS再生・テストツール、インストール不要">
+  <meta property="og:description" content="m3u8 のリンクを貼るだけで即再生。アダプティブビットレート対応のブラウザ型 HLS プレーヤーで、M3U8→MP4 変換や iframe 埋め込みにも対応します。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/ja/">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"M3U8Lab","url":"https://m3u8.kixtools.com/ja/","applicationCategory":"MultimediaApplication","operatingSystem":"Any","inLanguage":"ja","description":"m3u8 のリンクを貼るだけで即再生。アダプティブビットレート対応のブラウザ型 HLS プレーヤーで、M3U8→MP4 変換や iframe 埋め込みにも対応します。","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/ja"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/ja/">ホーム</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="言語"><option value="zh">中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja" selected>日本語</option><option value="ko">한국어</option></select>
+      <a href="/en/m3u8_to_mp4/" class="btn btn-primary">変換ツール</a><button class="menu-toggle" id="menuToggle" aria-label="メニュー"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="hero"><div class="container hero-inner">
+  <span class="eyebrow">✦ ブラウザで完結 · 登録不要 · 完全無料</span>
+  <h1>M3U8Labで、HLSストリームをその場で確認</h1>
+  <p class="lead">リンクを1本貼るだけでブラウザがそのままプレイヤーになる。アダプティブビットレートにも対応し、開発者の検証から動画視聴まで、デスクトップでもスマホでも同じ画面で動きます。</p>
+  <div class="hero-actions"><a href="#player" class="btn btn-primary btn-lg">再生する</a><a href="/ja/post/" class="btn btn-ghost btn-lg">チュートリアル</a></div>
+</div></section>
+
+<main>
+  <div class="container" id="player">
+    <div class="player-card">
+      <form class="player-form" onsubmit="event.preventDefault(); play();">
+        <input type="text" id="url" value="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" placeholder="m3u8のURLを入力 (例: https://.../index.m3u8)" autocomplete="off">
+        <button type="submit">再生</button>
+      </form>
+      <video id="player-container-id" preload="auto" playsinline webkit-playsinline></video>
+    </div>
+  </div>
+
+  <section class="section section-alt"><div class="container">
+    <div class="section-head"><h2>M3U8Labが選ばれる理由</h2><p>再生・検証・埋め込みを、1つの軽量ツールに集約しました</p></div>
+    <div class="grid">
+      <div class="card"><div class="card-icon">⚡</div><h3>導入ゼロで即再生</h3><p>登録もインストールも不要。URLを入力欄に貼ってボタンを押すまで、わずか数秒の操作です。</p></div>
+      <div class="card"><div class="card-icon">📱</div><h3>環境を選ばない</h3><p>HTML5とHLSの標準技術だけで作られているため、WindowsからiOS、Androidまで主要な環境でそのまま動きます。</p></div>
+      <div class="card"><div class="card-icon">🔒</div><h3>データは手元に</h3><p>動画は配信元からブラウザへ直接読み込まれるだけ。サーバー側でコンテンツを保存したり中継したりしません。</p></div>
+      <div class="card"><div class="card-icon">🧩</div><h3>サイトにすぐ載る</h3><p>iframeの1行コードをコピーするだけで、自分のページにプレイヤーを組み込めます。</p></div>
+    </div>
+  </div></section>
+
+  <section class="section section-alt"><div class="container">
+    <div class="section-head"><h2>自分のサイトにプレイヤーを置く</h2><p>iframeの1行で統合、パラメータを差し替えるだけ</p></div>
+    <div style="max-width:760px;margin:0 auto;">
+      <pre><code>&lt;iframe src="https://m3u8.kixtools.com/player.html?url=https://your-stream/index.m3u8"
+  width="100%" height="480" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;</code></pre>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="section-head"><h2>よくある質問</h2><p>M3U8Labの使い方でよく頂くご質問</p></div>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q">どんなURLが再生できますか？</div><div class="faq-a"><p>HLS（.m3u8）形式のストリームに対応しています。H.264/H.265の映像とAACの音声で構成された配信であれば、ライブもオンデマンドもそのまま読み込めます。</p></div></div>
+      <div class="faq-item"><div class="faq-q">動画の保存やMP4への変換もできますか？</div><div class="faq-a"><p>可能です。CORSを許可している配信元であれば、<a href="/en/m3u8_to_mp4/">M3U8→MP4変換</a>ページからブラウザ内だけでMP4ファイルを作成できます。</p></div></div>
+      <div class="faq-item"><div class="faq-q">再生が始まらない場合は何を確認すればいいですか？</div><div class="faq-a"><p>URLの有効期限、配信元のホットリンク対策、そしてCORS設定の3点が多くの原因です。詳しい切り分け方は<a href="/ja/post/">チュートリアル</a>にまとめています。</p></div></div>
+      <div class="faq-item"><div class="faq-q">スマートフォンでも使えますか？</div><div class="faq-a"><p>使えます。ブラウザさえあればiOS・Androidどちらでも同じ操作で再生でき、画面回転や全画面表示にも対応しています。</p></div></div>
+    </div>
+  </div></section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>HLS の再生・テスト・変換をブラウザにまとめたオンライン実験室。開発者にも一般ユーザーにも門戸を開く動画ツールです。</p>
+      </div>
+      <div class="footer-col"><h4>ツール</h4><ul><li><a href="/ja/">オンラインプレーヤー</a></li><li><a href="/en/m3u8_to_mp4/">M3U8→MP4 変換</a></li><li><a href="/vlc/">VLC プレーヤー</a></li></ul></div>
+      <div class="footer-col"><h4>リソース</h4><ul><li><a href="/ja/post/">チュートリアル</a></li><li><a href="/ja/about.html">サイトについて</a></li><li><a href="/privacy.html">プライバシー</a></li></ul></div>
+      <div class="footer-col">
+        <h4>言語</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab All rights reserved.</span>
+      <span>動画はインターネット上の公開リソースです。お問い合わせ：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+var player = undefined;
+function play(){var url=document.getElementById('url').value.trim();if(!url){alert('m3u8のURLを入力してください');return;}if(player===undefined){player=TCPlayer('player-container-id',{sources:[{src:url}],licenseUrl:window.SITE_CONFIG.licenseUrl,licenseKey:window.SITE_CONFIG.licenseKey});}player.pause();player.src(url);player.play();}
+document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});
+document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});
+document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});
+document.querySelectorAll('.faq-q').forEach(function(q){q.addEventListener('click',function(){this.parentElement.classList.toggle('open');});});
+</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

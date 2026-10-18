@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>找不到视频地址？手把手抓取网页里的 m3u8</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/post/1017.html">
+  <meta name="description" content="用浏览器开发者工具的 Network 面板按关键词过滤请求，三分钟定位页面背后隐藏的 m3u8 播放地址，并附常见干扰项识别技巧。">
+  <meta name="keywords" content="提取m3u8,抓包m3u8,开发者工具,network面板,视频地址">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+      <meta property="og:type" content="article">
+  <meta property="og:title" content="找不到视频地址？手把手抓取网页里的 m3u8">
+  <meta property="og:description" content="用浏览器开发者工具的 Network 面板按关键词过滤请求，三分钟定位页面背后隐藏的 m3u8 播放地址，并附常见干扰项识别技巧。">
+  <meta property="og:url" content="https://m3u8.kixtools.com/post/1017.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="zh_CN">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"找不到视频地址？手把手抓取网页里的 m3u8","description":"用浏览器开发者工具的 Network 面板按关键词过滤请求，三分钟定位页面背后隐藏的 m3u8 播放地址，并附常见干扰项识别技巧。","inLanguage":"zh-CN","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/post/1017.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/">首页</a></li><li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li><li><a href="/vlc/">VLC 播放器</a></li><li><a href="/post/">教程中心</a></li><li><a href="/about.html">关于</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="语言"><option value="zh" selected>中文</option><option value="en">English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>找不到视频地址？手把手抓取网页里的 m3u8</h1>
+<div class="article-meta">发布于 2026-10-18 · 阅读约 4 分钟</div>
+<div class="article-toc"><h4>目录</h4><ol><li><a href="#mindset">换一种思路找地址</a></li><li><a href="#netpanel">Network 面板三步定位</a></li><li><a href="#filter">过滤词与 MIME 类型对照</a></li><li><a href="#pitfalls">三个常见坑</a></li><li><a href="#verify">拿到地址之后</a></li></ol></div>
+
+<h2 id="mindset">换一种思路找地址</h2>
+<p>在网页源代码里搜不到 m3u8 很正常——现代页面的视频地址几乎都由脚本在运行时动态请求。与其翻代码，不如直接旁听浏览器自己的网络活动，谁在拉流一目了然。</p>
+
+<h2 id="netpanel">Network 面板三步定位</h2>
+<ol>
+<li>按 <code>F12</code> 唤出开发者工具，切到 <strong>Network</strong> 标签，顺手勾选 <strong>Preserve log</strong>（防止页面跳转后记录被清空）；</li>
+<li>刷新页面并点播视频，让请求流水跑起来；</li>
+<li>在过滤框输入 <code>m3u8</code>，通常会出现一个主列表加若干子列表。</li>
+</ol>
+
+<h2 id="filter">过滤词与 MIME 类型对照</h2>
+<p>过滤不到时放宽关键词：搜 <code>.ts</code> 找分片，搜 <code>index</code>、<code>playlist</code>、<code>manifest</code> 找清单文件。判断一个请求是不是播放列表，看响应头最靠谱——Content-Type 为 <code>application/vnd.apple.mpegurl</code> 或 <code>application/x-mpegURL</code> 的就是它。典型的主播放列表长这样：</p>
+<pre><code>#EXTM3U
+#EXT-X-STREAM-INF:BANDWIDTH=2149280,RESOLUTION=1280x720
+720p/index.m3u8
+#EXT-X-STREAM-INF:BANDWIDTH=986000,RESOLUTION=640x360
+360p/index.m3u8</code></pre>
+<p>右键这条请求选择 Copy → Copy link address，完整地址就进了剪贴板。个别站点把清单藏在 JSON 接口里返回，此时到 Response 里按 <code>m3u8</code> 再搜一次即可。</p>
+
+<h2 id="pitfalls">三个常见坑</h2>
+<ul>
+<li><strong>相对路径：</strong>清单里写的是子目录地址，抓取时别丢了协议与域名；</li>
+<li><strong>临时签名：</strong>含 token、expire 字段的链接离开当前会话可能失效，抓到后尽快使用；</li>
+<li><strong>主清单与子清单：</strong>满是 <code>#EXT-X-STREAM-INF</code> 行的是多码率主清单，实际播放的是它下面列出的子清单，两者都能用，但子清单更直接。</li>
+</ul>
+
+<h2 id="verify">拿到地址之后</h2>
+<p>粘进 <a href="/">M3U8Lab 在线播放器</a> 试播一下，能出画面说明地址有效；要保存成文件，看 <a href="/post/1013.html">四条转 MP4 路线</a>。最后提醒：抓取行为请仅用于自有内容或已获授权的场景，并遵守源站的服务条款。</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>一个把 HLS 流媒体播放、测试与转换装进浏览器的在线实验室，为开发者与普通观众提供零门槛的视频工具。</p>
+      </div>
+      <div class="footer-col"><h4>工具</h4><ul><li><a href="/">在线播放器</a></li><li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li><li><a href="/vlc/">VLC 播放器</a></li></ul></div>
+      <div class="footer-col"><h4>资源</h4><ul><li><a href="/post/">教程中心</a></li><li><a href="/about.html">关于本站</a></li><li><a href="/privacy.html">隐私政策</a></li></ul></div>
+      <div class="footer-col">
+        <h4>语言</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab · 保留所有权利</span>
+      <span>视频资源均来自互联网，侵权反馈请致：aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Does HLS Keep Buffering? A Practical Troubleshooting Guide</title>
+<link rel="canonical" href="https://m3u8.kixtools.com/en/post/1005.html">
+  <meta name="description" content="From segment duration and bandwidth swings to CDN hit rate: a five-step checklist to hunt down whatever is making your HLS stream stutter.">
+  <meta name="keywords" content="hls buffering,m3u8 stuttering,video buffering fix,hls lag">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="stylesheet" href="/css/main.css">
+      <meta property="og:type" content="article">
+  <meta property="og:title" content="Why Does HLS Keep Buffering? A Practical Troubleshooting Guide">
+  <meta property="og:description" content="From segment duration and bandwidth swings to CDN hit rate: a five-step checklist to hunt down whatever is making your HLS stream stutter.">
+  <meta property="og:url" content="https://m3u8.kixtools.com/en/post/1005.html">
+  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Why Does HLS Keep Buffering? A Practical Troubleshooting Guide","description":"From segment duration and bandwidth swings to CDN hit rate: a five-step checklist to hunt down whatever is making your HLS stream stutter.","inLanguage":"en","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/en/post/1005.html"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/en"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/en/">Home</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 to MP4</a></li><li><a href="/vlc/">VLC Player</a></li><li><a href="/en/post/">Tutorials</a></li><li><a href="/en/about.html">About</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="Language"><option value="zh">中文</option><option value="en" selected>English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+<main>
+<article class="article-wrap">
+<h1>Why Does HLS Keep Buffering? A Practical Troubleshooting Guide</h1>
+<div class="article-meta">Published 2026-10-18 · 5 min read</div>
+<div class="article-toc"><h4>Contents</h4><ol><li><a href="#mechanics">What Buffering Actually Is</a></li><li><a href="#triage">A Five-Step Triage Routine</a></li><li><a href="#source-side">When the Source Is the Culprit</a></li><li><a href="#viewer-side">Fixes You Control as a Viewer</a></li><li><a href="#fallback">The Last Resort: Play It Locally</a></li></ol></div>
+
+<h2 id="mechanics">What Buffering Actually Is</h2>
+<p>Two clocks run during any HLS session: the playhead consuming footage in real time, and the download frontier fetching the next chunks. The picture freezes the instant the second clock falls behind the first — the buffer has run dry. So every stall, at root, means one of these went wrong: the connection delivers bytes too slowly, an individual segment took an unusually long detour, or the player paused fetching for some other reason entirely.</p>
+
+<h2 id="triage">A Five-Step Triage Routine</h2>
+<ol>
+<li><strong>Reproduce somewhere clean.</strong> Paste the same link into the <a href="/en/">online player</a>. If it plays smoothly there, the fault lies in the original page or player, not the stream.</li>
+<li><strong>Watch the Network panel.</strong> Filter for <code>.ts</code> and eyeball load times: a single five-second request points at one bad segment; every request crawling points at bandwidth.</li>
+<li><strong>Measure raw throughput.</strong> A quick command tells you what the link can actually sustain:</li>
+</ol>
+<pre><code>curl -o /dev/null -s -w "%{speed_download} bytes/s\n" "https://example.com/seg-001.ts"</code></pre>
+<ol start="4">
+<li><strong>Compare it to the stream's bitrate.</strong> If the video needs roughly two-thirds of what your connection can provide, stalls are inevitable — the margin is too thin for network jitter.</li>
+<li><strong>Check for rejected requests.</strong> Console warnings about CORS, or 403 responses on segments, mean access rules rather than raw speed are to blame.</li>
+</ol>
+
+<h2 id="source-side">When the Source Is the Culprit</h2>
+<ul>
+<li><strong>Encoder lag.</strong> On live broadcasts, the packager may be producing chunks slower than viewers consume them — nothing you do client-side can fix that.</li>
+<li><strong>Cache misses.</strong> Rotating query strings on segment URLs defeat CDN caching, forcing every viewer onto the origin server.</li>
+<li><strong>Chunky segments.</strong> Ten-second fragments stretch startup and widen each gap between fetches; well-tuned deployments favor two to four seconds.</li>
+<li><strong>Key delivery delays.</strong> AES-128 streams fetch a decryption key before playback; a slow key endpoint stalls the very first frame.</li>
+</ul>
+
+<h2 id="viewer-side">Fixes You Control as a Viewer</h2>
+<ul>
+<li>Manually drop the quality one notch — halving the bitrate roughly doubles your headroom.</li>
+<li>Silence background bandwidth hogs: cloud sync, system updates, other tabs mid-download.</li>
+<li>Prefer wired or 5 GHz connections; congested 2.4 GHz Wi-Fi alone can cause periodic stutter.</li>
+<li>Give desktop players a bigger cushion. In VLC: <code>Tools → Preferences → Input / Codecs → Network caching</code>, raised to 1000–3000 ms.</li>
+<li>On VPNs, switch exit nodes or disconnect — a distant relay often throttles throughput badly.</li>
+</ul>
+
+<h2 id="fallback">The Last Resort: Play It Locally</h2>
+<p>When a stream works but only just, watching it through a browser fights the physics the whole way. Pull it down once instead and playback stops depending on the network. The <a href="/en/m3u8_to_mp4/">M3U8 to MP4 converter</a> handles this in-browser, and <a href="/en/post/1013.html">our conversion guide</a> covers command-line alternatives for longer recordings.</p>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <p>An online lab that puts HLS playback, testing and conversion right in your browser — zero-install video tools for developers and everyday viewers.</p>
+      </div>
+      <div class="footer-col"><h4>Tools</h4><ul><li><a href="/en/">Online Player</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 to MP4</a></li><li><a href="/vlc/">VLC Player</a></li></ul></div>
+      <div class="footer-col"><h4>Resources</h4><ul><li><a href="/en/post/">Tutorials</a></li><li><a href="/en/about.html">About</a></li><li><a href="/privacy.html">Privacy Policy</a></li></ul></div>
+      <div class="footer-col">
+        <h4>Languages</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab. All rights reserved.</span>
+      <span>All streams come from the public internet. For takedown requests: aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+<script>document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>
