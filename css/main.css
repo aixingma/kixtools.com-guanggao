@@ -278,7 +278,7 @@ ul, ol { padding-left: 1.4rem; }
 
 /* ============ 播放器卡片 ============ */
 .player-card {
-  max-width: 900px;
+  max-width: 100%;
   margin: 0 auto;
   background: linear-gradient(180deg, var(--surface-2), var(--surface));
   border: 1px solid var(--border);
@@ -774,7 +774,7 @@ pre code { background: none; padding: 0; color: inherit; }
   .hero p.lead { font-size: 16px; }
   .section { padding: 48px 0; }
   .section-head h2, .section-head h1 { font-size: 25px; }
-  .player-card { padding: 16px; margin: 0 16px; }
+  .player-card { padding: 16px; }
   .player-form { flex-direction: column; }
   .player-form input { height: 58px; font-size: 16px; padding: 0 22px; }
   .player-form button { margin-top: 0; height: 54px; font-size: 16px; }
