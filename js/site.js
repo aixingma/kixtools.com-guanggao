@@ -56,8 +56,8 @@ var SNIPPETS = [
    在页面指定锚点后自动插入广告容器，再加载广告脚本。
    player.html 不加载本文件，天然无广告。
    ============================================================ */
-var AD_SCRIPT_SRC = 'https://pl31857358.profitableratecpmnetwork.com/0a44d2f22e81f19d07f5885e7add6eb5/invoke.js';
-var AD_CONTAINER_ID = 'container-0a44d2f22e81f19d07f5885e7add6eb5';
+var AD_SCRIPT_SRC = 'https://pl31491526.profitableratecpmnetwork.com/f319cb215ffd37715c7fd46c36d2ada7/invoke.js';
+var AD_CONTAINER_ID = 'container-f319cb215ffd37715c7fd46c36d2ada7';
 
 (function () {
   /* 锚点优先级：播放器卡片 → 转换卡片 → 文章正文 → hero 区 → 首个内容区 */
