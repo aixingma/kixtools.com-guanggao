@@ -295,17 +295,18 @@ ul, ol { padding-left: 1.4rem; }
 }
 .player-form input {
   flex: 1;
-  height: 50px;
-  padding: 0 18px;
-  border: 1px solid var(--border);
+  height: 52px;
+  padding: 0 20px;
+  border: 1.5px solid #2e4070;
   border-radius: 999px;
-  background: var(--ink-100);
-  color: var(--ink-900);
-  font-size: 15px;
+  background: #1a2547;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-.player-form input::placeholder { color: var(--ink-300); }
+.player-form input::placeholder { color: var(--ink-300); font-weight: 400; }
 .player-form input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
@@ -775,7 +776,8 @@ pre code { background: none; padding: 0; color: inherit; }
   .section-head h2, .section-head h1 { font-size: 25px; }
   .player-card { padding: 16px; margin: 0 16px; }
   .player-form { flex-direction: column; }
-  .player-form button { margin-top: 0; }
+  .player-form input { height: 58px; font-size: 16px; padding: 0 22px; }
+  .player-form button { margin-top: 0; height: 54px; font-size: 16px; }
   .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
   .nav-links {
     display: none;
