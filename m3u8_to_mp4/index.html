@@ -107,12 +107,20 @@
   const ffmpeg = hasFFmpeg ? new FFmpegWASM.FFmpeg() : null;
 
   // 引擎与核心全部本地同源部署：ffmpeg.js 内部 worker 自动取同目录 814.ffmpeg.js，
-  // core/wasm 直接以同源路径加载，无需 classWorkerURL，也不依赖任何第三方 CDN
+  // core 以同源路径加载；wasm 拆为两个分片（适配静态托管单文件 25MiB 限制），
+  // 并行下载后内存拼接为完整 wasm，以 Blob URL 喂给 FFmpeg，不影响转换速度
   async function loadFFmpeg() {
     if (ffmpeg.loaded) return;
+    const [b1, b2] = await Promise.all([
+      fetch(FFMPEG_BASE + '/ffmpeg-core.wasm.part1').then(r => r.arrayBuffer()),
+      fetch(FFMPEG_BASE + '/ffmpeg-core.wasm.part2').then(r => r.arrayBuffer()),
+    ]);
+    const wasm = new Uint8Array(b1.byteLength + b2.byteLength);
+    wasm.set(new Uint8Array(b1), 0);
+    wasm.set(new Uint8Array(b2), b1.byteLength);
     await ffmpeg.load({
       coreURL: FFMPEG_BASE + '/ffmpeg-core.js',
-      wasmURL: FFMPEG_BASE + '/ffmpeg-core.wasm',
+      wasmURL: URL.createObjectURL(new Blob([wasm], { type: 'application/wasm' })),
     });
   }
   const statusEl = document.getElementById('status');

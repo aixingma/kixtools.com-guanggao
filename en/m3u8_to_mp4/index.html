@@ -81,7 +81,7 @@ const fetchFile = util ? util.fetchFile : null;
 const ffmpeg = hasFFmpeg ? new FFmpegWASM.FFmpeg() : null;
 // Engine and core are fully self-hosted: ffmpeg.js auto-loads its worker (814.ffmpeg.js) from the same
 // directory, and core/wasm load via same-origin paths — no classWorkerURL, no third-party CDN needed.
-async function loadFFmpeg(){if(ffmpeg.loaded)return;await ffmpeg.load({coreURL:FFMPEG_BASE+'/ffmpeg-core.js',wasmURL:FFMPEG_BASE+'/ffmpeg-core.wasm'});}
+async function loadFFmpeg(){if(ffmpeg.loaded)return;const[b1,b2]=await Promise.all([fetch(FFMPEG_BASE+'/ffmpeg-core.wasm.part1').then(r=>r.arrayBuffer()),fetch(FFMPEG_BASE+'/ffmpeg-core.wasm.part2').then(r=>r.arrayBuffer())]);const wasm=new Uint8Array(b1.byteLength+b2.byteLength);wasm.set(new Uint8Array(b1),0);wasm.set(new Uint8Array(b2),b1.byteLength);await ffmpeg.load({coreURL:FFMPEG_BASE+'/ffmpeg-core.js',wasmURL:URL.createObjectURL(new Blob([wasm],{type:'application/wasm'}))});}
 const statusEl = document.getElementById('status');
 const progressEl = document.getElementById('progress');
 const progressBar = document.getElementById('progressBar');

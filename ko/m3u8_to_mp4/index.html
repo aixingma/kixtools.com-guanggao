@@ -80,7 +80,7 @@ const hasFFmpeg = !!(typeof FFmpegWASM !== 'undefined' && FFmpegWASM && FFmpegWA
 const fetchFile = util ? util.fetchFile : null;
 const ffmpeg = hasFFmpeg ? new FFmpegWASM.FFmpeg() : null;
 // 엔진과 코어 모두 자체 호스팅: ffmpeg.js가 같은 디렉터리의 worker(814.ffmpeg.js)를 자동으로 불러오고 core/wasm도 동일 출처 경로로 로드됩니다. classWorkerURL 불필요, 외부 CDN 무의존.
-async function loadFFmpeg(){if(ffmpeg.loaded)return;await ffmpeg.load({coreURL:FFMPEG_BASE+'/ffmpeg-core.js',wasmURL:FFMPEG_BASE+'/ffmpeg-core.wasm'});}
+async function loadFFmpeg(){if(ffmpeg.loaded)return;const[b1,b2]=await Promise.all([fetch(FFMPEG_BASE+'/ffmpeg-core.wasm.part1').then(r=>r.arrayBuffer()),fetch(FFMPEG_BASE+'/ffmpeg-core.wasm.part2').then(r=>r.arrayBuffer())]);const wasm=new Uint8Array(b1.byteLength+b2.byteLength);wasm.set(new Uint8Array(b1),0);wasm.set(new Uint8Array(b2),b1.byteLength);await ffmpeg.load({coreURL:FFMPEG_BASE+'/ffmpeg-core.js',wasmURL:URL.createObjectURL(new Blob([wasm],{type:'application/wasm'}))});}
 const statusEl = document.getElementById('status');
 const progressEl = document.getElementById('progress');
 const progressBar = document.getElementById('progressBar');
