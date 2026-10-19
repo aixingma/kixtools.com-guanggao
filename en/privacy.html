@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M3U8Lab — Play & Test HLS Streams in Your Browser, No Install Needed</title>
+  <link rel="canonical" href="https://kixtools.com/en/">
+  <link rel="alternate" hreflang="zh" href="https://kixtools.com/privacy.html">
+  <link rel="alternate" hreflang="en" href="https://kixtools.com/en/privacy.html">
+  <link rel="alternate" hreflang="x-default" href="https://kixtools.com/privacy.html">
+<meta name="description" content="Paste an m3u8 link and start watching instantly. M3U8Lab is a browser-based HLS player with adaptive bitrate, plus tools to convert M3U8 to MP4 and embed players anywhere.">
+  <meta name="keywords" content="m3u8 player online,hls test player,play m3u8 in browser,m3u8 to mp4">
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="stylesheet" href="/css/main.css">
+  <script src="/js/jquery.min.js"></script>
+  <link href="https://web.sdk.qcloud.com/player/tcplayer/release/v5.1.0/tcplayer.min.css" rel="stylesheet">
+  <script src="https://web.sdk.qcloud.com/player/tcplayer/release/v5.1.0/tcplayer.v5.1.0.min.js"></script>
+  <script src="/js/config.js"></script>
+    <meta property="og:type" content="website">
+  <meta property="og:title" content="M3U8Lab — Play & Test HLS Streams in Your Browser, No Install Needed">
+  <meta property="og:description" content="Paste an m3u8 link and start watching instantly. M3U8Lab is a browser-based HLS player with adaptive bitrate, plus tools to convert M3U8 to MP4 and embed players anywhere.">
+  <meta property="og:url" content="https://kixtools.com/en/">
+  <meta property="og:image" content="https://kixtools.com/images/logo.png">
+  <meta property="og:site_name" content="M3U8Lab">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"M3U8Lab","url":"https://kixtools.com/en/","applicationCategory":"MultimediaApplication","operatingSystem":"Any","inLanguage":"en","description":"Paste an m3u8 link and start watching instantly. M3U8Lab is a browser-based HLS player with adaptive bitrate, plus tools to convert M3U8 to MP4 and embed players anywhere.","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="/en"><span class="brand-logo">▶</span><span>M3U8Lab</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks"><li><a href="/en/">Home</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 to MP4</a></li><li><a href="/vlc/">VLC Player</a></li><li><a href="/en/post/">Tutorials</a></li><li><a href="/en/about.html">About</a></li></ul>
+    </nav>
+    <div class="nav-right">
+      <select class="nav-lang" id="language-selector" aria-label="Language"><option value="zh">中文</option><option value="en" selected>English</option><option value="pt">Português</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+      <a href="/en/m3u8_to_mp4/" class="btn btn-primary">Convert Now</a><button class="menu-toggle" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="hero"><div class="container hero-inner">
+  <span class="eyebrow">✦ Browser-Powered · Free · Zero Setup</span>
+  <h1>Your Browser, Now an HLS Lab</h1>
+  <p class="lead">Hand it an m3u8 address and M3U8Lab starts streaming right away — adaptive quality for live and on-demand feeds, with nothing to download and nothing to install.</p>
+  <div class="hero-actions"><a href="#player" class="btn btn-primary btn-lg">Try the Player</a><a href="/en/post/" class="btn btn-ghost btn-lg">Browse the Guides</a></div>
+</div></section>
+
+<main>
+  <section class="section tool-intro">
+    <div class="container">
+      <p>M3U8Lab is a zero-barrier online HLS streaming lab. Paste an m3u8 URL and your browser handles playback, testing, frame capture and conversion locally — no player software or plugins to install. No video upload required. Our servers never touch, store, or proxy any video data; everything happens inside your own browser.</p>
+      <p>We serve two communities. Developers use the player to validate m3u8 stream accessibility, adaptive bitrate behavior, multi-quality switching, and to debug CDN, anti-leech or CORS issues. Viewers use the M3U8-to-MP4 converter to remux HLS live or on-demand streams into standalone MP4 files, ready for offline playback or sharing.</p>
+    </div>
+  </section>
+
+  <div class="container" id="player">
+    <div class="player-card">
+      <form class="player-form" onsubmit="event.preventDefault(); play();">
+        <input type="text" id="url" value="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" placeholder="Enter an m3u8 URL, e.g. https://.../index.m3u8" autocomplete="off">
+        <button type="submit">Play</button>
+      </form>
+      <video id="player-container-id" preload="auto" playsinline webkit-playsinline></video>
+    </div>
+  </div>
+
+  <section class="section section-alt"><div class="container">
+    <div class="section-head"><h2>What Sets This Player Apart</h2><p>Four reasons this tab stays pinned, whether you ship streams or simply watch them</p></div>
+    <div class="grid">
+      <div class="card"><div class="card-icon">⚡</div><h3>Instant Start</h3><p>Nothing to download or configure. Open the page, drop in a link, and the first frame appears.</p></div>
+      <div class="card"><div class="card-icon">📱</div><h3>Runs Everywhere</h3><p>Pure HTML5 with HLS under the hood, so behavior is identical on Windows, macOS, Linux, iOS and Android.</p></div>
+      <div class="card"><div class="card-icon">🔒</div><h3>Stays Local</h3><p>Video bytes flow straight from the source into your browser — our servers never touch the stream.</p></div>
+      <div class="card"><div class="card-icon">🧩</div><h3>One-Line Embed</h3><p>A single iframe snippet puts the same player on your own site, no build step required.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="section-head"><h2>From Link to First Frame in Seconds</h2><p>Three moves and the show begins — no manual required</p></div>
+    <div class="steps">
+      <div class="step"><h4>Grab the stream address</h4><p>Track down the .m3u8 URL from your feed, player, or streaming platform of choice.</p></div>
+      <div class="step"><h4>Drop it in the field</h4><p>Paste it into the input at the top of this page — a demo stream comes preloaded so you can test straight away.</p></div>
+      <div class="step"><h4>Press play</h4><p>The playlist loads, chunks arrive, and playback begins — usually before you finish reading this.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section section-alt"><div class="container">
+    <div class="section-head"><h2>Put the Player on Any Page</h2><p>A single iframe tag brings HLS playback to your own site</p></div>
+    <div style="max-width:760px;margin:0 auto;">
+      <pre><code>&lt;iframe src="https://kixtools.com/player.html?url=https://your-stream/index.m3u8"
+  width="100%" height="480" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;</code></pre>
+      <p style="text-align:center;margin-top:14px;color:var(--ink-500);">Point the <code>url</code> value at your stream's address and reload — that's the whole setup.</p>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="section-head"><h2>Answers Before You Ask</h2><p>What people want to know ahead of — and just after — their first stream</p></div>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q">Do I need an account or sign-up?</div><div class="faq-a"><p>No. M3U8Lab works anonymously: open the page, paste a link, play. Nothing about your session is stored or tied to a profile.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Can I watch live broadcasts here?</div><div class="faq-a"><p>Yes. Live HLS playlists load exactly like on-demand ones — the player follows the sliding window and keeps requesting fresh segments as they appear.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Where do I find the m3u8 address for a video?</div><div class="faq-a"><p>Open the source page in your browser, start the video, then filter the Network panel of your developer tools for "m3u8". Our step-by-step tutorial covers the exact clicks.</p></div></div>
+      <div class="faq-item"><div class="faq-q">Is there a cap on stream length?</div><div class="faq-a"><p>None. Because data is piped directly from the source into your browser, a feature-length film plays just as easily as a ten-second clip.</p></div></div>
+    </div>
+  </div></section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand" ><span class="brand-logo">▶</span><span >M3U8Lab</span></div>
+        <p>An online lab that puts HLS playback, testing and conversion right in your browser — zero-install video tools for developers and everyday viewers.</p>
+      </div>
+      <div class="footer-col"><h4>Tools</h4><ul><li><a href="/en/">Online Player</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 to MP4</a></li><li><a href="/vlc/">VLC Player</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="/en/privacy.html">Privacy Policy</a></li><li><a href="/en/terms.html">Terms</a></li><li><a href="/en/about.html">About</a></li></ul></div>
+      <div class="footer-col">
+        <h4>Languages</h4>
+        <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 - 2026 M3U8Lab. All rights reserved.</span>
+      <span>All streams come from the public internet. For takedown requests: aimbpro@gmail.com</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+var player = undefined;
+function play(){var url=document.getElementById('url').value.trim();if(!url){alert('Please enter an m3u8 URL');return;}if(player===undefined){player=TCPlayer('player-container-id',{sources:[{src:url}],licenseUrl:window.SITE_CONFIG.licenseUrl,licenseKey:window.SITE_CONFIG.licenseKey});}player.pause();player.src(url);player.play();}
+document.getElementById('language-selector').addEventListener('change',function(){var v=this.value,p=window.location.pathname;var m={zh:'',en:'/en',pt:'/pt',ja:'/ja',ko:'/ko'};var c=p.replace(/^\/(en|pt|ja|ko)/,'')||'/';window.location.href=(m[v]||'')+c;});
+document.getElementById('menuToggle').addEventListener('click',function(e){e.stopPropagation();document.getElementById('navLinks').classList.toggle('open');});
+document.body.addEventListener('click',function(){document.getElementById('navLinks').classList.remove('open');});
+document.querySelectorAll('.faq-q').forEach(function(q){q.addEventListener('click',function(){this.parentElement.classList.toggle('open');});});
+</script>
+  <script src="/js/site.js"></script>
+</body>
+</html>

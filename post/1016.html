@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>m3u8 播放出现花屏绿屏？解码链路问题速查</title>
-<link rel="canonical" href="https://m3u8.kixtools.com/post/1016.html">
+<link rel="canonical" href="https://kixtools.com/post/1016.html">
+  <link rel="alternate" hreflang="zh" href="https://kixtools.com/post/1016.html">
+  <link rel="alternate" hreflang="x-default" href="https://kixtools.com/post/1016.html">
   <meta name="description" content="花屏、绿屏、马赛克多源于解码链路：从编码参数不标准、关键帧丢失到硬件解码兼容性，逐项给出定位与规避方法。">
   <meta name="keywords" content="视频花屏,绿屏,马赛克,解码错误,hls画面异常">
   <link rel="icon" type="image/png" href="/images/logo.png">
@@ -12,12 +14,12 @@
       <meta property="og:type" content="article">
   <meta property="og:title" content="m3u8 播放出现花屏绿屏？解码链路问题速查">
   <meta property="og:description" content="花屏、绿屏、马赛克多源于解码链路：从编码参数不标准、关键帧丢失到硬件解码兼容性，逐项给出定位与规避方法。">
-  <meta property="og:url" content="https://m3u8.kixtools.com/post/1016.html">
-  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:url" content="https://kixtools.com/post/1016.html">
+  <meta property="og:image" content="https://kixtools.com/images/logo.png">
   <meta property="og:site_name" content="M3U8Lab">
   <meta property="og:locale" content="zh_CN">
   <meta name="twitter:card" content="summary">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"m3u8 播放出现花屏绿屏？解码链路问题速查","description":"花屏、绿屏、马赛克多源于解码链路：从编码参数不标准、关键帧丢失到硬件解码兼容性，逐项给出定位与规避方法。","inLanguage":"zh-CN","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://m3u8.kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://m3u8.kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://m3u8.kixtools.com/post/1016.html"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"m3u8 播放出现花屏绿屏？解码链路问题速查","description":"花屏、绿屏、马赛克多源于解码链路：从编码参数不标准、关键帧丢失到硬件解码兼容性，逐项给出定位与规避方法。","inLanguage":"zh-CN","datePublished":"2026-10-18","dateModified":"2026-10-18","author":{"@type":"Organization","name":"M3U8Lab","url":"https://kixtools.com/"},"publisher":{"@type":"Organization","name":"M3U8Lab","logo":{"@type":"ImageObject","url":"https://kixtools.com/images/logo.png"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://kixtools.com/post/1016.html"}}</script>
 </head>
 <body>
 <header class="site-header">
@@ -68,11 +70,11 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <div class="brand" ><span class="brand-logo">▶</span><span >M3U8Lab</span></div>
         <p>一个把 HLS 流媒体播放、测试与转换装进浏览器的在线实验室，为开发者与普通观众提供零门槛的视频工具。</p>
       </div>
       <div class="footer-col"><h4>工具</h4><ul><li><a href="/">在线播放器</a></li><li><a href="/m3u8_to_mp4/">M3U8 转 MP4</a></li><li><a href="/vlc/">VLC 播放器</a></li></ul></div>
-      <div class="footer-col"><h4>资源</h4><ul><li><a href="/post/">教程中心</a></li><li><a href="/about.html">关于本站</a></li><li><a href="/privacy.html">隐私政策</a></li></ul></div>
+      <div class="footer-col"><h4>法律</h4><ul><li><a href="/privacy.html">隐私政策</a></li><li><a href="/terms.html">服务条款</a></li><li><a href="/about.html">关于本站</a></li></ul></div>
       <div class="footer-col">
         <h4>语言</h4>
         <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>

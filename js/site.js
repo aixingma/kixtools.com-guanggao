@@ -2,22 +2,9 @@
    全站统一注入配置（统计代码）
    ------------------------------------------------------------
    ★ 你只需要修改这一个文件，全站所有页面（含各语言版）自动生效 ★
-
-   使用方法：
-   把广告平台 / 统计平台给你的整段 <script> 代码，原样粘贴到
-   下方 SNIPPETS 数组中（每段代码用反引号 ` 包住，逗号分隔）。
    ============================================================ */
 
 var SNIPPETS = [
-  /* ---------- 广告代码（如 Google AdSense）---------- */
-  // 示例：把 ca-pub-xxxxxxxx 换成你自己的客户 ID 后，去掉行首 //
-  // `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-xxxxxxxx" crossorigin="anonymous"></script>`,
-
-  /* ---------- 统计代码（如 Google Analytics / 百度统计 / 51.la）---------- */
-  // 示例 Google Analytics：
-  // `<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>`,
-  // `<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>`,
-
   /* ---------- Umami 统计（已启用）---------- */
   `<script defer src="https://umami.aixmb.cn/script.js" data-website-id="7f0169c5-4b01-46de-b6b6-9b73c4075e5b"></script>`,
 ];
@@ -51,40 +38,69 @@ var SNIPPETS = [
 })();
 
 /* ============================================================
-   广告位（已启用）
+   Cookie 同意横幅（AdSense 合规要求）
    ------------------------------------------------------------
-   在页面指定锚点后自动插入广告容器，再加载广告脚本。
-   player.html 不加载本文件，天然无广告。
+   player.html 不加载本文件，天然不显示。
+   按页面语言显示文案，Accept/Decline 状态存 localStorage。
    ============================================================ */
-var AD_SCRIPT_SRC = 'https://pl31491526.profitableratecpmnetwork.com/f319cb215ffd37715c7fd46c36d2ada7/invoke.js';
-var AD_CONTAINER_ID = 'container-f319cb215ffd37715c7fd46c36d2ada7';
-
 (function () {
-  /* 锚点优先级：播放器卡片 → 转换卡片 → 文章正文 → hero 区 → 首个内容区 */
-  var anchors = [
-    '#player .player-card',
-    '.convert-wrap .convert-card',
-    '.article-wrap',
-    '.hero',
-    'main .section'
-  ];
-  var host = null;
-  for (var i = 0; i < anchors.length; i++) {
-    host = document.querySelector(anchors[i]);
-    if (host) break;
+  var COOKIE_KEY = 'm3u8lab_cookie_consent';
+  var accepted = localStorage.getItem(COOKIE_KEY);
+  if (accepted === 'accepted' || accepted === 'declined') return;
+
+  var lang = (document.documentElement.lang || 'zh').slice(0, 2).toLowerCase();
+  var TEXT = {
+    zh: {
+      msg: '本网站使用 Cookie 来改善体验、分析流量并显示相关内容。继续使用本站即表示您同意我们的 Cookie 政策。',
+      accept: '同意',
+      decline: '拒绝',
+      policy: '隐私政策'
+    },
+    en: {
+      msg: 'This site uses cookies to improve your experience, analyze traffic, and show relevant content. By continuing you agree to our Cookie Policy.',
+      accept: 'Accept',
+      decline: 'Decline',
+      policy: 'Privacy Policy'
+    },
+    pt: {
+      msg: 'Este site usa cookies para melhorar sua experiência, analisar o tráfego e mostrar conteúdo relevante. Ao continuar, você concorda com nossa Política de Cookies.',
+      accept: 'Aceitar',
+      decline: 'Recusar',
+      policy: 'Política de Privacidade'
+    },
+    ja: {
+      msg: 'このサイトでは、体験の向上、トラフィックの分析、関連コンテンツの表示のために Cookie を使用しています。使用を続けることで、Cookie ポリシーに同意したものとみなされます。',
+      accept: '同意する',
+      decline: '拒否する',
+      policy: 'プライバシーポリシー'
+    },
+    ko: {
+      msg: '이 사이트는 환경 개선, 트래픽 분석, 관련 콘텐츠 표시를 위해 쿠키를 사용합니다. 계속 사용하면 쿠키 정책에 동의하는 것으로 간주됩니다.',
+      accept: '동의',
+      decline: '거부',
+      policy: '개인정보 처리방침'
+    }
+  };
+  var t = TEXT[lang] || TEXT.zh;
+
+  var banner = document.createElement('div');
+  banner.className = 'cookie-banner';
+  banner.innerHTML =
+    '<p>' + t.msg + ' <a href="/privacy.html">' + t.policy + '</a></p>' +
+    '<div class="cb-actions">' +
+    '<button class="decline" type="button">' + t.decline + '</button>' +
+    '<button class="accept" type="button">' + t.accept + '</button>' +
+    '</div>';
+
+  function hideAndRemember(val) {
+    localStorage.setItem(COOKIE_KEY, val);
+    banner.classList.add('hidden');
+    setTimeout(function () { if (banner.parentNode) banner.parentNode.removeChild(banner); }, 300);
   }
-  if (!host) return;
+  banner.querySelector('.accept').addEventListener('click', function () { hideAndRemember('accepted'); });
+  banner.querySelector('.decline').addEventListener('click', function () { hideAndRemember('declined'); });
 
-  var slot = document.createElement('div');
-  slot.className = 'ad-slot';
-  slot.id = AD_CONTAINER_ID;
-  host.parentNode.insertBefore(slot, host.nextSibling);
-
-  var s = document.createElement('script');
-  s.async = true;
-  s.setAttribute('data-cfasync', 'false');
-  s.src = AD_SCRIPT_SRC;
-  document.body.appendChild(s);
+  document.body.appendChild(banner);
 })();
 
 /* ============================================================
@@ -101,7 +117,6 @@ var AD_CONTAINER_ID = 'container-f319cb215ffd37715c7fd46c36d2ada7';
   var lang = (document.documentElement.lang || 'zh').slice(0, 2).toLowerCase();
   var t = L[lang] || L.zh;
 
-  // 兜底复制：现代剪贴板 API 在页面未聚焦等场景下可能一直不回调，用同步方案保证可用
   function legacyCopy(str) {
     var ta = document.createElement('textarea');
     ta.value = str;
@@ -136,7 +151,6 @@ var AD_CONTAINER_ID = 'container-f319cb215ffd37715c7fd46c36d2ada7';
         function fallback() { legacyCopy(text); feedback(); }
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(feedback, fallback);
-          // 若剪贴板 API 迟迟不回调（部分浏览器未聚焦时会挂起），600ms 后走同步兜底
           setTimeout(function () { if (!settled) fallback(); }, 600);
         } else {
           fallback();

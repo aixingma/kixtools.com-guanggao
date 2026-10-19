@@ -1,11 +1,17 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>M3U8Lab — Reproduza e teste streams HLS no navegador, sem instalar nada</title>
-  <link rel="canonical" href="https://m3u8.kixtools.com/pt/">
-  <meta name="description" content="Cole um link m3u8 e assista na hora. Player HLS baseado no navegador com bitrate adaptativo, conversão de M3U8 para MP4 e incorporação em qualquer site.">
+  <link rel="canonical" href="https://kixtools.com/pt/">
+  <link rel="alternate" hreflang="zh" href="https://kixtools.com/">
+  <link rel="alternate" hreflang="en" href="https://kixtools.com/en/">
+  <link rel="alternate" hreflang="pt" href="https://kixtools.com/pt/">
+  <link rel="alternate" hreflang="ja" href="https://kixtools.com/ja/">
+  <link rel="alternate" hreflang="ko" href="https://kixtools.com/ko/">
+  <link rel="alternate" hreflang="x-default" href="https://kixtools.com/">
+<meta name="description" content="Cole um link m3u8 e assista na hora. Player HLS baseado no navegador com bitrate adaptativo, conversão de M3U8 para MP4 e incorporação em qualquer site.">
   <meta name="keywords" content="player m3u8 online,testar hls,reproduzir m3u8,m3u8 para mp4">
   <link rel="icon" type="image/png" href="/images/logo.png">
   <link rel="stylesheet" href="/css/main.css">
@@ -16,12 +22,12 @@
     <meta property="og:type" content="website">
   <meta property="og:title" content="M3U8Lab — Reproduza e teste streams HLS no navegador, sem instalar nada">
   <meta property="og:description" content="Cole um link m3u8 e assista na hora. Player HLS baseado no navegador com bitrate adaptativo, conversão de M3U8 para MP4 e incorporação em qualquer site.">
-  <meta property="og:url" content="https://m3u8.kixtools.com/pt/">
-  <meta property="og:image" content="https://m3u8.kixtools.com/images/logo.png">
+  <meta property="og:url" content="https://kixtools.com/pt/">
+  <meta property="og:image" content="https://kixtools.com/images/logo.png">
   <meta property="og:site_name" content="M3U8Lab">
   <meta property="og:locale" content="pt_BR">
   <meta name="twitter:card" content="summary">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"M3U8Lab","url":"https://m3u8.kixtools.com/pt/","applicationCategory":"MultimediaApplication","operatingSystem":"Any","inLanguage":"pt","description":"Cole um link m3u8 e assista na hora. Player HLS baseado no navegador com bitrate adaptativo, conversão de M3U8 para MP4 e incorporação em qualquer site.","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"M3U8Lab","url":"https://kixtools.com/pt/","applicationCategory":"MultimediaApplication","operatingSystem":"Any","inLanguage":"pt","description":"Cole um link m3u8 e assista na hora. Player HLS baseado no navegador com bitrate adaptativo, conversão de M3U8 para MP4 e incorporação em qualquer site.","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}</script>
 </head>
 <body>
 <header class="site-header">
@@ -45,6 +51,12 @@
 </div></section>
 
 <main>
+  <section class="section tool-intro">
+    <div class="container">
+      <p>O M3U8Lab é um laboratório de streaming HLS online sem barreiras. Cole um link m3u8 e o seu navegador faz o resto: reprodução, teste, captura e conversão, tudo localmente. Nenhuma instalação necessária. Nenhum vídeo é enviado aos nossos servidores — tudo acontece no seu próprio navegador.</p>
+    </div>
+  </section>
+
   <div class="container" id="player">
     <div class="player-card">
       <form class="player-form" onsubmit="event.preventDefault(); play();">
@@ -68,7 +80,7 @@
   <section class="section section-alt"><div class="container">
     <div class="section-head"><h2>Incorpore em qualquer página</h2><p>Copie o snippet, troque o endereço do stream e publique</p></div>
     <div style="max-width:760px;margin:0 auto;">
-      <pre><code>&lt;iframe src="https://m3u8.kixtools.com/player.html?url=https://seu-stream/index.m3u8"
+      <pre><code>&lt;iframe src="https://kixtools.com/player.html?url=https://seu-stream/index.m3u8"
   width="100%" height="480" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;</code></pre>
     </div>
   </div></section>
@@ -88,11 +100,11 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="brand" style="color:#f2f6fc;"><span class="brand-logo">▶</span><span style="color:#f2f6fc;">M3U8Lab</span></div>
+        <div class="brand" ><span class="brand-logo">▶</span><span >M3U8Lab</span></div>
         <p>Um laboratório online que traz reprodução, teste e conversão de HLS para o seu navegador — ferramentas de vídeo sem instalação.</p>
       </div>
       <div class="footer-col"><h4>Ferramentas</h4><ul><li><a href="/pt/">Player online</a></li><li><a href="/en/m3u8_to_mp4/">M3U8 para MP4</a></li><li><a href="/vlc/">Player VLC</a></li></ul></div>
-      <div class="footer-col"><h4>Recursos</h4><ul><li><a href="/pt/post/">Tutoriais</a></li><li><a href="/pt/about.html">Sobre</a></li><li><a href="/privacy.html">Privacidade</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="/pt/privacy.html">Privacidade</a></li><li><a href="/pt/terms.html">Termos</a></li><li><a href="/pt/about.html">Sobre</a></li></ul></div>
       <div class="footer-col">
         <h4>Idiomas</h4>
         <ul><li><a href="/">中文</a></li><li><a href="/en/">English</a></li><li><a href="/pt/">Português</a></li><li><a href="/ja/">日本語</a></li><li><a href="/ko/">한국어</a></li></ul>

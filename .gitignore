@@ -1,0 +1,10 @@
+# 临时文件
+*.zip
+*.bak
+*.tmp
+*.log
+*.swp
+
+# 系统
+.DS_Store
+Thumbs.db
